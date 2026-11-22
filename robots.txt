@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /panel/
+
+Sitemap: https://hectormelgar22.github.io/pagpoke/sitemap-index.xml
