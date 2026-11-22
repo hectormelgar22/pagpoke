@@ -15,7 +15,7 @@ const rk = calcularRanking(e.torneos, e.jugadores, actual.id);
 const r = tienda.ranking;
 ---
 <Base titulo="Clasificación de jugadores" descripcion={`Clasificación de la comunidad de ${tienda.nombre}: puntos, torneos jugados, victorias y últimos resultados de cada jugador.`} pagina="torneos">
-  <CabeceraTorneos actual="clasificacion" etiqueta="Clasificación de la comunidad" titulo="Quién brilla en la tienda." texto="Puntos calculados con los resultados de cada torneo finalizado. Elige temporada y toca un jugador para ver su historial." />
+  <CabeceraTorneos actual="clasificacion" etiqueta="Torneos" titulo="Clasificación de jugadores" texto="Puntos de cada jugador según sus resultados en los torneos de la tienda. Pulsa en un jugador para ver su historial." />
   <section class="seccion osc" style="padding-top:clamp(2.5rem,5vw,3.5rem)">
     <div class="contenedor">
       <div class="fila" style="justify-content:space-between;margin-bottom:28px">

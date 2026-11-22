@@ -6,15 +6,14 @@ import Horario from '../components/Horario.astro';
 import '../styles/tienda.css';
 import '../styles/torneos.css';
 import { tienda, direccionCompleta, enlaceWhatsApp, enlaceMapa } from '../data/tienda.ts';
-import { PRODUCTOS, CATEGORIAS, productoPorId, EXPANSIONES } from '../data/catalogo.ts';
+import { PRODUCTOS, CATEGORIAS, EXPANSIONES } from '../data/catalogo.ts';
 import { FOTOS } from '../data/fotos.ts';
 import { estadoInicial } from '../lib/almacen.ts';
-import { tarjetaProducto, urlProducto, rarezaHTML } from '../lib/vistas/producto.ts';
+import { tarjetaProducto } from '../lib/vistas/producto.ts';
 import { tarjetaTorneo, destacado as destacadoHTML, podio, textoProximo, proximoConPlazas, rutaTorneo } from '../lib/vistas/torneo.ts';
 import { calcularRanking, temporadaDe } from '../lib/ranking.ts';
 import { horarioSchema } from '../lib/horario.ts';
 import { icono } from '../lib/iconos.ts';
-import { euros } from '../lib/html.ts';
 import { recomendar, RESPUESTAS_INICIALES } from '../lib/asistente.ts';
 
 const ahora = new Date();
@@ -26,14 +25,14 @@ const rk = calcularRanking(e.torneos, e.jugadores, temporadaDe(ahora.toISOString
 const temporadaTorneos = e.torneos.filter((t) => t.finalizado && temporadaDe(t.inicio).id === temporadaDe(ahora.toISOString()).id).length;
 
 const cuenta = (c: string) => PRODUCTOS.filter((p) => p.categoria === c).length;
-const pieza = productoPorId.get('umbreon-ex-pre-161')!;
 const listas = {
   novedades: PRODUCTOS.filter((p) => p.alta <= 20).sort((a, b) => a.alta - b.alta).slice(0, 8),
   buscados: PRODUCTOS.filter((p) => p.etiquetas.includes('mas-buscado')).slice(0, 8),
-  seleccion: PRODUCTOS.filter((p) => p.etiquetas.includes('destacado')).slice(0, 8),
+  vitrina: PRODUCTOS.filter((p) => p.categoria === 'cartas' && p.precio >= 40).sort((a, b) => b.precio - a.precio).slice(0, 8),
 };
 const expAsistente = EXPANSIONES.filter((x) => ['megaevolucion', '151', 'prismaticas', 'mascaras', 'escarlata-purpura'].includes(x.id));
-const arteCat: Record<string, string> = { sobres: 'sobre-megaevolucion', cajas: 'etb-megaevolucion', coleccion: 'charizard-base-psa8', accesorios: 'archivador-9', merch: 'camiseta-destello' };
+const fotoCat: Record<string, string> = { cartas: 'umbreon-ex-pre-161', sobres: 'sobre-megaevolucion', cajas: 'etb-prismaticas', coleccion: 'charizard-base-psa8', accesorios: 'archivador-9' };
+const proximo = proximos.length ? proximoConPlazas(proximos, ahora) : null;
 
 const ld = {
   '@context': 'https://schema.org',
@@ -54,183 +53,128 @@ const ld = {
 };
 ---
 <Base titulo={`${tienda.nombre} · Tienda de cartas Pokémon TCG en ${tienda.direccion.ciudad}`} descripcion={tienda.descripcionSeo} pagina="inicio" jsonld={ld}>
-  <!-- HERO: el sobre que se abre -->
-  <section class="hero osc" data-hero>
-    <div class="hero-fondo" aria-hidden="true"></div>
-    <div class="contenedor hero-in">
-      <h1>
-        <span class="etiqueta"><Fragment set:html={icono('destello')} />Tienda de cartas Pokémon TCG en {tienda.direccion.ciudad}</span>
-        <span class="display hero-titulo"><span class="linea">Abre algo</span><span class="linea"><em class="holo-texto">especial.</em></span></span>
-      </h1>
-      <p class="hero-sub">Cartas sueltas revisadas una a una, las últimas expansiones y torneos cada semana. Reserva por WhatsApp y recógelo en tienda.</p>
-      <div class="hero-cta">
-        <a class="btn btn--acento" href="/catalogo/">Explorar catálogo <Fragment set:html={icono('flecha')} /></a>
-        <a class="btn btn--fantasma" href="/torneos/">Ver torneos</a>
+  <section class="banner">
+    <div class="contenedor banner-in">
+      <div class="banner-texto">
+        <p class="banner-aviso">Ya a la venta</p>
+        <h1>Megaevolución ya está en tienda</h1>
+        <p class="banner-sub">Sobres, cajas de 36 sobres y Cajas de Entrenador Élite de la nueva expansión. Resérvalo por WhatsApp y recógelo en nuestra tienda de {tienda.direccion.ciudad}.</p>
+        <div class="fila">
+          <a class="btn btn--acento" href="/catalogo/?expansion=megaevolucion">Ver Megaevolución</a>
+          <a class="btn btn--fantasma" href="/catalogo/">Todo el catálogo</a>
+        </div>
       </div>
-    </div>
-    <div class="hero-escena" aria-hidden="true">
-      <div class="abanico">
-        {[0, 1, 2, 3, 4].map((i) => (
-          <div class="carta-hero" style={`--i:${i}`}><img src={`/arte/hero-${i + 1}.svg`} width="250" height="350" alt="" decoding="async" /></div>
-        ))}
+      <div class="banner-productos" aria-hidden="true">
+        <img class="bp-caja" src="/productos/display-megaevolucion.webp" width="600" height="600" alt="" fetchpriority="high" />
+        <img class="bp-etb" src="/productos/etb-megaevolucion.webp" width="600" height="600" alt="" />
+        <img class="bp-sobre" src="/productos/sobre-megaevolucion.webp" width="600" height="600" alt="" />
       </div>
-      <div class="sobre-hero">
-        <svg viewBox="0 0 200 300">
-          <defs>
-            <linearGradient id="sh-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2B2550" /><stop offset=".5" stop-color="#4C2A7E" /><stop offset="1" stop-color="#17142B" /></linearGradient>
-            <linearGradient id="sh-h" x1="0" y1="0" x2="1" y2=".7"><stop offset="0" stop-color="#5EEAD4" /><stop offset=".35" stop-color="#A78BFA" /><stop offset=".65" stop-color="#F472B6" /><stop offset="1" stop-color="#FFB547" /></linearGradient>
-          </defs>
-          <path class="sobre-tapa" d="M4 4 L14 12 L24 4 L34 12 L44 4 L54 12 L64 4 L74 12 L84 4 L94 12 L104 4 L114 12 L124 4 L134 12 L144 4 L154 12 L164 4 L174 12 L184 4 L196 12 L196 36 L4 36Z" fill="url(#sh-g)" />
-          <path d="M4 38 L196 38 L196 288 L184 296 L174 288 L164 296 L154 288 L144 296 L134 288 L124 296 L114 288 L104 296 L94 288 L84 296 L74 288 L64 296 L54 288 L44 296 L34 288 L24 296 L14 288 L4 296Z" fill="url(#sh-g)" />
-          <path d="M4 38 L196 38 L196 288 L4 296Z" fill="url(#sh-h)" opacity=".28" />
-          <path d="M100 96c3 24 12 33 46 46-34 13-43 22-46 46-3-24-12-33-46-46 34-13 43-22 46-46Z" fill="#fff" />
-          <text x="100" y="250" fill="#fff" font-family="ui-monospace,monospace" font-size="15" font-weight="700" text-anchor="middle" letter-spacing="4">DESTELLO</text>
-        </svg>
-      </div>
-    </div>
-    <div class="contenedor hero-datos">
-      <a class="dato-vivo" href="/contacto/#horario"><span class="punto-vivo" data-punto-tienda></span><span><small>Tienda física · {tienda.direccion.ciudad}</small><strong data-estado-tienda>Consulta el horario</strong></span></a>
-      {proximos[0] && (
-        <a class="dato-vivo" href={rutaTorneo(proximoConPlazas(proximos, ahora))} data-proximo-torneo><Fragment set:html={icono('trofeo')} /><span><small>Próximo torneo con plazas</small><strong data-texto>{textoProximo(proximoConPlazas(proximos, ahora), ahora)}</strong></span></a>
-      )}
-      <a class="dato-vivo" href="/catalogo/?orden=novedad"><Fragment set:html={icono('destello')} /><span><small>Recién llegado</small><strong>{listas.novedades.length} novedades este mes</strong></span></a>
     </div>
   </section>
+  <div class="franja-info">
+    <div class="contenedor franja-info-in">
+      <a href="/contacto/#horario"><span class="punto-vivo" data-punto-tienda></span><span><strong data-estado-tienda>Consulta el horario</strong><small>{direccionCompleta}</small></span></a>
+      {proximo && (
+        <a href={rutaTorneo(proximo)} data-proximo-torneo><Fragment set:html={icono('trofeo')} /><span><strong>Próximo torneo</strong><small data-texto>{textoProximo(proximo, ahora)}</small></span></a>
+      )}
+      <a href="/vende-tu-coleccion/"><Fragment set:html={icono('intercambio')} /><span><strong>Compramos tu colección</strong><small>Tasación gratis en tienda</small></span></a>
+    </div>
+  </div>
 
-  <!-- CATEGORÍAS -->
-  <section class="seccion clara" aria-labelledby="t-cat">
+  <section class="seccion blanca" aria-labelledby="t-cat">
     <div class="contenedor">
       <div class="cab-seccion">
-        <div>
-          <p class="etiqueta">Catálogo · {PRODUCTOS.length} productos con stock real</p>
-          <h2 class="h2" id="t-cat">Todo lo que buscas, ordenado como en una buena carpeta.</h2>
-        </div>
+        <h2 class="h2" id="t-cat">Comprar por categoría</h2>
         <a class="enlace-flecha" href="/catalogo/">Ver todo el catálogo <Fragment set:html={icono('flecha')} /></a>
       </div>
-      <div class="bento">
-        <a class="bento-item bento-item--foto" href="/catalogo/?categoria=cartas" data-revela>
-          <Foto src={FOTOS.archivador.src} alt="" sizes="(min-width: 900px) 50vw, 100vw" />
-          <span class="cuenta">{cuenta('cartas')} cartas en vitrina</span>
-          <h3>Cartas sueltas</h3>
-          <p>Ilustraciones especiales, hiper raras y las cartas que te faltan para el mazo.</p>
-        </a>
-        {CATEGORIAS.filter((c) => c.id !== 'cartas').map((c, i) => (
-          <a class="bento-item" href={`/catalogo/?categoria=${c.id}`} data-revela style={`--retraso:${(i + 1) * 70}ms`}>
-            <img class="bento-arte" src={`/arte/${arteCat[c.id]}.svg`} width="400" height="500" alt="" loading="lazy" decoding="async" />
-            <span class="cuenta">{cuenta(c.id)} productos</span>
-            <h3>{c.plural}</h3>
-            <p>{c.texto}</p>
+      <div class="categorias">
+        {CATEGORIAS.map((c) => (
+          <a class="categoria" href={`/catalogo/?categoria=${c.id}`}>
+            <img src={`/productos/${fotoCat[c.id]}.webp`} width="600" height="600" alt="" loading="lazy" decoding="async" />
+            <span class="categoria-nombre">{c.plural}</span>
+            <span class="categoria-num">{cuenta(c.id)} productos</span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- ESCAPARATE -->
-  <section class="seccion osc" aria-labelledby="t-esc">
+  <section class="seccion clara" aria-labelledby="t-esc">
     <div class="contenedor">
-      <div class="cab-seccion">
-        <div>
-          <p class="etiqueta">Escaparate · elegido por la tienda</p>
-          <h2 class="h2" id="t-esc">Piezas que no duran mucho en la vitrina.</h2>
+      <div class="carrusel" data-carrusel>
+        <div class="carrusel-cab">
+          <h2 class="h2" id="t-esc">Destacados</h2>
+          <div class="chips" role="tablist" aria-label="Selección de productos">
+            <button class="chip" role="tab" aria-selected="true" data-lista="novedades">Novedades</button>
+            <button class="chip" role="tab" aria-selected="false" data-lista="buscados">Lo más buscado</button>
+            <button class="chip" role="tab" aria-selected="false" data-lista="vitrina">Cartas de vitrina</button>
+          </div>
+          <div class="carrusel-flechas">
+            <button class="btn-icono" type="button" data-mover="-1" aria-label="Anteriores" set:html={icono('atras')} />
+            <button class="btn-icono" type="button" data-mover="1" aria-label="Siguientes" set:html={icono('flecha')} />
+          </div>
         </div>
-      </div>
-      <div class="escaparate">
-        <article class="pieza" data-revela style={`--c1:${pieza.arte.c1};--c2:${pieza.arte.c2}`}>
-          <p class="etiqueta"><Fragment set:html={icono('estrella')} />Pieza de la semana</p>
-          <div class="pieza-carta" data-tilt>
-            <div class="tilt"><img src={`/arte/${pieza.id}.svg`} width="400" height="500" alt={`Ilustración de ${pieza.nombre}`} loading="lazy" /><span class="brillo"></span></div>
+        {Object.entries(listas).map(([k, l], i) => (
+          <div class="carrusel-pista" role="tabpanel" data-panel={k} hidden={i !== 0} tabindex="0" aria-label={k}>
+            <Fragment set:html={l.map((p) => String(tarjetaProducto(p, e.productos[p.id]))).join('')} />
           </div>
-          <div class="pila" style="--pila:8px;justify-items:center">
-            <Fragment set:html={String(rarezaHTML(pieza)).replace('class="rareza', 'style="position:static" class="rareza')} />
-            <h3 class="h3">{pieza.nombre} · {pieza.numero}</h3>
-            <p class="entradilla" style="font-size:.95rem">{pieza.resumen}</p>
-            <p class="fila" style="justify-content:center"><span class="precio cifra" data-precio={pieza.id}>{euros(pieza.precio)}</span></p>
-            <div class="fila" style="justify-content:center">
-              <span data-accion={pieza.id}><button class="btn btn--acento btn--peq" type="button" data-reservar={pieza.id}>Reservar</button></span>
-              <a class="btn btn--fantasma btn--peq" href={urlProducto(pieza)}>Ver ficha</a>
-            </div>
-          </div>
-        </article>
-        <div class="carrusel" data-carrusel>
-          <div class="carrusel-cab">
-            <div class="chips" role="tablist" aria-label="Selección de productos">
-              <button class="chip" role="tab" aria-selected="true" data-lista="novedades">Novedades</button>
-              <button class="chip" role="tab" aria-selected="false" data-lista="buscados">Más buscados</button>
-              <button class="chip" role="tab" aria-selected="false" data-lista="seleccion">Selección de la tienda</button>
-            </div>
-            <div class="carrusel-flechas">
-              <button class="btn-icono" type="button" data-mover="-1" aria-label="Anteriores" set:html={icono('atras')} />
-              <button class="btn-icono" type="button" data-mover="1" aria-label="Siguientes" set:html={icono('flecha')} />
-            </div>
-          </div>
-          {Object.entries(listas).map(([k, l], i) => (
-            <div class="carrusel-pista" role="tabpanel" data-panel={k} hidden={i !== 0} tabindex="0" aria-label={k}>
-              <Fragment set:html={l.map((p) => String(tarjetaProducto(p, e.productos[p.id]))).join('')} />
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- TORNEOS -->
-  <section class="seccion osc osc-2" aria-labelledby="t-tor" style="overflow:hidden">
+  <section class="seccion osc" aria-labelledby="t-tor">
     <div class="contenedor">
       <div class="cab-seccion">
         <div>
-          <p class="etiqueta">Comunidad · {temporadaTorneos} torneos esta temporada</p>
-          <h2 class="h2" id="t-tor">Tu próxima partida empieza aquí.</h2>
-          <p class="entradilla">Inscríbete desde la web, sigue los cuadros ronda a ronda y consulta la clasificación de la tienda.</p>
+          <h2 class="h2" id="t-tor">Próximos torneos</h2>
+          <p class="entradilla">Apúntate desde la web y sigue los resultados ronda a ronda. Llevamos {temporadaTorneos} torneos esta temporada.</p>
         </div>
-        <a class="enlace-flecha" href="/torneos/">Todos los torneos <Fragment set:html={icono('flecha')} /></a>
+        <a class="enlace-flecha" href="/torneos/">Calendario completo <Fragment set:html={icono('flecha')} /></a>
       </div>
       <div class="pila" style="--pila:22px" data-inicio-torneos>
         {grande && <Fragment set:html={String(destacadoHTML(grande, ahora))} />}
-        <div class="rejilla-torneos" data-revela><Fragment set:html={tres.map((t) => String(tarjetaTorneo(t, ahora))).join('')} /></div>
+        <div class="rejilla-torneos"><Fragment set:html={tres.map((t) => String(tarjetaTorneo(t, ahora))).join('')} /></div>
       </div>
-      <div class="dos-col" style="margin-top:clamp(3rem,6vw,5rem)">
-        <div class="pila" style="--pila:16px">
-          <p class="etiqueta">Clasificación · {temporadaDe(ahora.toISOString()).nombre}</p>
-          <h3 class="h2" style="font-size:clamp(1.6rem,3.4vw,2.4rem)">Los que más brillan esta temporada.</h3>
-          <p class="entradilla">La clasificación se calcula con los resultados reales de cada torneo: participación, victorias y puesto final.</p>
-          <a class="btn btn--fantasma" style="justify-self:start" href="/torneos/clasificacion/">Ver la clasificación completa</a>
+      <div class="dos-col" style="margin-top:clamp(2.5rem,5vw,4rem)">
+        <div class="pila" style="--pila:14px">
+          <h3 class="h2">Clasificación de la temporada</h3>
+          <p class="entradilla">Sumas puntos por jugar, por cada partida ganada y por tu puesto final en cada torneo.</p>
+          <a class="btn btn--fantasma" style="justify-self:start" href="/torneos/clasificacion/">Ver clasificación completa</a>
         </div>
         <div data-inicio-podio><Fragment set:html={String(podio(rk, e.jugadores))} /></div>
       </div>
     </div>
   </section>
 
-  <!-- ASISTENTE -->
   <section class="seccion clara" aria-labelledby="t-asis">
     <div class="contenedor">
       <div class="cab-seccion">
         <div>
-          <p class="etiqueta"><Fragment set:html={icono('lupa')} />Asistente de compra</p>
-          <h2 class="h2" id="t-asis">¿No sabes por dónde empezar?</h2>
-          <p class="entradilla">Contesta cuatro preguntas y te enseñamos lo que encaja de verdad con lo que tenemos en tienda.</p>
+          <h2 class="h2" id="t-asis">¿Buscas un regalo?</h2>
+          <p class="entradilla">Marca qué buscas y cuánto quieres gastar, y te enseñamos lo que tenemos en tienda.</p>
         </div>
       </div>
       <form class="asistente" data-asistente>
         <div class="asistente-pasos">
           <fieldset>
-            <legend><span class="mono">01</span>¿Qué buscas?</legend>
+            <legend>Qué buscas</legend>
             <div class="chips">
-              {[['todo', 'Sorpréndeme'], ['cartas', 'Cartas sueltas'], ['sobres', 'Sobres y cajas'], ['accesorios', 'Accesorios']].map(([v, n], i) => (
+              {[['todo', 'Cualquier cosa'], ['cartas', 'Cartas sueltas'], ['sobres', 'Sobres y cajas'], ['accesorios', 'Accesorios']].map(([v, n], i) => (
                 <label class="chip"><input type="radio" name="tipo" value={v} checked={i === 0} />{n}</label>
               ))}
             </div>
           </fieldset>
           <fieldset>
-            <legend><span class="mono">02</span>¿Para qué?</legend>
+            <legend>Para qué</legend>
             <div class="chips">
-              {[['', 'Me da igual'], ['coleccion', 'Coleccionar'], ['jugar', 'Jugar'], ['regalo', 'Regalar'], ['empezar', 'Empezar de cero']].map(([v, n], i) => (
+              {[['', 'Me da igual'], ['coleccion', 'Coleccionar'], ['jugar', 'Jugar'], ['regalo', 'Regalar'], ['empezar', 'Empezar a jugar']].map(([v, n], i) => (
                 <label class="chip"><input type="radio" name="uso" value={v} checked={i === 0} />{n}</label>
               ))}
             </div>
           </fieldset>
           <fieldset>
-            <legend><span class="mono">03</span>Presupuesto</legend>
+            <legend>Presupuesto</legend>
             <div class="chips">
               {[['0-15', 'Hasta 15 €'], ['15-60', '15–60 €'], ['60-150', '60–150 €'], ['0-99999', 'Sin límite']].map(([v, n], i) => (
                 <label class="chip"><input type="radio" name="presupuesto" value={v} checked={i === 3} />{n}</label>
@@ -238,7 +182,7 @@ const ld = {
             </div>
           </fieldset>
           <fieldset>
-            <legend><span class="mono">04</span>¿Alguna expansión?</legend>
+            <legend>Expansión</legend>
             <div class="chips">
               <label class="chip"><input type="radio" name="expansion" value="" checked />Cualquiera</label>
               {expAsistente.map((x) => <label class="chip"><input type="radio" name="expansion" value={x.id} />{x.nombre}</label>)}
@@ -250,49 +194,44 @@ const ld = {
     </div>
   </section>
 
-  <!-- CONOCE LA TIENDA -->
   <section class="seccion blanca" aria-labelledby="t-tienda">
     <div class="contenedor dos-col dos-col--ancha">
-      <div class="collage" data-revela>
-        <figure class="c1"><Foto src={FOTOS.tienda.src} alt={FOTOS.tienda.alt} sizes="(min-width: 960px) 40vw, 100vw" /><figcaption>La tienda</figcaption></figure>
-        <figure class="c2"><Foto src={FOTOS.zonaJuego.src} alt={FOTOS.zonaJuego.alt} sizes="(min-width: 960px) 20vw, 50vw" anchos={[400, 800]} /><figcaption>Zona de juego</figcaption></figure>
-        <figure class="c3"><Foto src={FOTOS.comunidad.src} alt={FOTOS.comunidad.alt} sizes="(min-width: 960px) 20vw, 50vw" anchos={[400, 800]} /><figcaption>Comunidad</figcaption></figure>
+      <div class="collage">
+        <figure class="c1"><Foto src={FOTOS.tienda.src} alt={FOTOS.tienda.alt} sizes="(min-width: 960px) 40vw, 100vw" /></figure>
+        <figure class="c2"><Foto src={FOTOS.zonaJuego.src} alt={FOTOS.zonaJuego.alt} sizes="(min-width: 960px) 20vw, 50vw" anchos={[400, 800]} /></figure>
+        <figure class="c3"><Foto src={FOTOS.comunidad.src} alt={FOTOS.comunidad.alt} sizes="(min-width: 960px) 20vw, 50vw" anchos={[400, 800]} /></figure>
       </div>
-      <div class="pila" style="--pila:20px">
-        <p class="etiqueta">La tienda · desde {tienda.desde}</p>
-        <h2 class="h2" id="t-tienda">Un sitio para coleccionar con calma y jugar con ganas.</h2>
-        <p class="entradilla">Vitrinas con precio a la vista, una zona de juego con {tienda.espacios[0].dato} y un mostrador donde revisamos cada carta contigo.</p>
-        <div class="datos-tienda">
-          {tienda.espacios.map((s) => <div><strong>{s.dato}</strong><span>{s.titulo}</span></div>)}
-        </div>
-        <a class="btn btn--claro" style="justify-self:start;box-shadow:inset 0 0 0 1.5px var(--tinta)" href="/tienda/">Conoce la tienda</a>
+      <div class="pila" style="--pila:18px">
+        <h2 class="h2" id="t-tienda">La tienda</h2>
+        <p class="entradilla">Abrimos en {tienda.desde} en {tienda.direccion.ciudad}. Tenemos cartas sueltas con el precio a la vista, producto sellado de cada expansión y una zona de juego con {tienda.espacios[0].dato} donde jugamos liga y torneos todas las semanas.</p>
+        <ul class="lista-simple" role="list">
+          {tienda.espacios.map((s) => <li><strong>{s.titulo}.</strong> {s.texto}</li>)}
+        </ul>
+        <a class="btn btn--fantasma" style="justify-self:start" href="/tienda/">Ver fotos de la tienda</a>
       </div>
     </div>
   </section>
 
-  <!-- VENDE -->
   <section class="seccion osc" aria-labelledby="t-vende">
     <div class="contenedor dos-col">
-      <div class="pila" style="--pila:20px">
-        <p class="etiqueta"><Fragment set:html={icono('intercambio')} />Compra, venta e intercambio</p>
-        <h2 class="h2" id="t-vende">¿Tienes cartas guardadas? Te decimos lo que valen.</h2>
+      <div class="pila" style="--pila:18px">
+        <h2 class="h2" id="t-vende">Compramos tu colección</h2>
+        <p class="entradilla">¿Tienes cartas guardadas en una carpeta o en una caja? Mándanos unas fotos y te decimos cuánto te podemos ofrecer. Pagamos en efectivo o en crédito de tienda (un 20 % más).</p>
         <ol class="pasos" role="list">
-          <li><strong>Cuéntanos qué tienes</strong><p>Rellena el formulario con unas fotos de tus cartas o tu colección.</p></li>
-          <li><strong>Te damos una valoración</strong><p>Revisamos estado y precio de mercado y te contestamos con una oferta orientativa.</p></li>
-          <li><strong>Lo cerramos en tienda</strong><p>Revisamos las cartas contigo y eliges: dinero o crédito de tienda.</p></li>
+          <li><strong>Nos mandas fotos</strong><p>Desde el formulario o por WhatsApp.</p></li>
+          <li><strong>Te damos un precio orientativo</strong><p>Normalmente en menos de 24 horas.</p></li>
+          <li><strong>Lo cerramos en tienda</strong><p>Revisamos las cartas contigo y cobras en el momento.</p></li>
         </ol>
-        <a class="btn btn--acento" style="justify-self:start" href="/vende-tu-coleccion/">Valorar mi colección</a>
+        <a class="btn btn--acento" style="justify-self:start" href="/vende-tu-coleccion/">Pedir valoración</a>
       </div>
-      <div class="foto-marco foto-marco--alta" data-revela><Foto src={FOTOS.tasacion.src} alt={FOTOS.tasacion.alt} sizes="(min-width: 960px) 45vw, 100vw" /></div>
+      <div class="foto-marco foto-marco--alta"><Foto src={FOTOS.tasacion.src} alt={FOTOS.tasacion.alt} sizes="(min-width: 960px) 45vw, 100vw" /></div>
     </div>
   </section>
 
-  <!-- VISITA -->
   <section class="seccion clara" aria-labelledby="t-visita" id="visitanos">
     <div class="contenedor dos-col">
-      <div class="pila" style="--pila:20px">
-        <p class="etiqueta"><span class="punto-vivo" data-punto-tienda></span><span data-estado-tienda>Horario</span></p>
-        <h2 class="h2" id="t-visita">Ven a vernos.</h2>
+      <div class="pila" style="--pila:18px">
+        <h2 class="h2" id="t-visita">Horario y cómo llegar</h2>
         <p class="entradilla">{direccionCompleta}. {tienda.direccion.comoLlegar}</p>
         <Horario />
         <div class="fila">

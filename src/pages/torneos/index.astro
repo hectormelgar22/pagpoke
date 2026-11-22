@@ -17,7 +17,7 @@ const v = pintarPortadaTorneos(e, ahora);
 const temp = temporadaDe(ahora.toISOString());
 ---
 <Base titulo={`Torneos Pokémon TCG en ${tienda.direccion.ciudad}: calendario e inscripción`} descripcion={`Torneos de Pokémon TCG en ${tienda.nombre} (${tienda.direccion.ciudad}): League Challenge, League Cup, Copa Destello y presentaciones. Inscríbete online, sigue los cuadros y la clasificación.`} pagina="torneos">
-  <CabeceraTorneos actual="portada" etiqueta={`Comunidad competitiva · ${temp.nombre}`} titulo="Aquí se juega en serio. Y se pasa bien." texto="Inscríbete desde la web, consulta quién juega, sigue el cuadro ronda a ronda y mira cómo va la clasificación de la tienda.">
+  <CabeceraTorneos actual="portada" etiqueta={`Comunidad competitiva · ${temp.nombre}`} titulo="Torneos y liga" texto="Todos los torneos de la tienda: inscripción online, participantes, cuadros, resultados y clasificación.">
     <div class="marcador-comunidad" data-marcador set:html={v.marcador} />
   </CabeceraTorneos>
 
@@ -57,11 +57,11 @@ const temp = temporadaDe(ahora.toISOString());
 
       <div class="dos-col" style="align-items:start">
         <div>
-          <div class="cab-seccion"><div><p class="etiqueta">Clasificación · {temp.nombre}</p><h2 class="h2">Top de la tienda</h2></div><a class="enlace-flecha" href="/torneos/clasificacion/">Clasificación completa <Fragment set:html={icono('flecha')} /></a></div>
+          <div class="cab-seccion"><div><p class="etiqueta">Clasificación · {temp.nombre}</p><h2 class="h2">Clasificación</h2></div><a class="enlace-flecha" href="/torneos/clasificacion/">Clasificación completa <Fragment set:html={icono('flecha')} /></a></div>
           <div data-ranking set:html={v.ranking} />
         </div>
         <div>
-          <div class="cab-seccion"><div><p class="etiqueta">Historial</p><h2 class="h2">Últimos campeones</h2></div><a class="enlace-flecha" href="/torneos/historial/">Todo el historial <Fragment set:html={icono('flecha')} /></a></div>
+          <div class="cab-seccion"><div><p class="etiqueta">Historial</p><h2 class="h2">Últimos torneos</h2></div><a class="enlace-flecha" href="/torneos/historial/">Todo el historial <Fragment set:html={icono('flecha')} /></a></div>
           <div class="rejilla-historial" style="grid-template-columns:1fr" data-historial set:html={v.historial} />
         </div>
       </div>
@@ -72,8 +72,7 @@ const temp = temporadaDe(ahora.toISOString());
     <div class="contenedor dos-col">
       <div class="foto-marco foto-marco--alta"><Foto src={FOTOS.zonaJuego.src} alt={FOTOS.zonaJuego.alt} sizes="(min-width: 960px) 45vw, 100vw" /></div>
       <div class="pila" style="--pila:18px">
-        <p class="etiqueta">Guía para tu primer torneo</p>
-        <h2 class="h2" id="t-novato">¿Primera vez? Así funciona.</h2>
+                <h2 class="h2" id="t-novato">¿Es tu primer torneo?</h2>
         <ol class="pasos" role="list">
           <li><strong>Elige un torneo para empezar</strong><p>La Liga de los jueves y los torneos de presentación son perfectos para estrenarte: ambiente tranquilo y gente que te ayuda.</p></li>
           <li><strong>Inscríbete aquí</strong><p>En un minuto. Te confirmamos la plaza y el día del torneo pagas en tienda.</p></li>

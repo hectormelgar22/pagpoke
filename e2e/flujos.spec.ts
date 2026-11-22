@@ -26,7 +26,7 @@ async function limpiar(page: Page) {
 test('portada: hero, datos en vivo y asistente', async ({ page }) => {
   await limpiar(page);
   await page.goto('/');
-  await expect(page.locator('h1')).toContainText('Abre algo');
+  await expect(page.locator('h1')).toContainText('Megaevolución');
   await expect(page.locator('[data-proximo-torneo] [data-texto]')).toContainText(/plazas|Completo|cerradas/i);
   await page.locator('[data-asistente] label', { hasText: 'Accesorios' }).click();
   await expect(page.locator('[data-asistente-resultado]')).toContainText(/encaja/);
@@ -38,10 +38,10 @@ test('catálogo: búsqueda, filtros, URL y estado vacío', async ({ page }) => {
   const total = await tarjetas.count();
   expect(total).toBeGreaterThan(30);
   await page.fill('#q', 'charizard');
-  await expect(tarjetas).toHaveCount(3);
+  await expect(tarjetas).toHaveCount(5); // 3 cartas + fundas y archivador de Charizard
   await expect(page).toHaveURL(/q=charizard/);
   await page.locator('[name="disponible"]').check({ force: true });
-  await expect(tarjetas).toHaveCount(2);
+  await expect(tarjetas).toHaveCount(4);
   await page.fill('#q', 'zzzz');
   await expect(page.locator('[data-vacio]')).toBeVisible();
   await page.locator('[data-vacio] [data-limpiar]').click();

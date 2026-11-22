@@ -10,7 +10,7 @@ import { REGLAS_POR_DEFECTO } from '../lib/ranking.ts';
 export const tienda = {
   nombre: 'Destello',
   nombreCompleto: 'Destello · Cartas y torneos',
-  lema: 'Abre algo especial.',
+  lema: 'Cartas y torneos en Valencia',
   descripcionCorta: 'Tienda especializada en Pokémon TCG: cartas sueltas, producto sellado, accesorios y torneos semanales.',
   descripcionSeo:
     'Tienda de cartas Pokémon TCG en Valencia: cartas sueltas, sobres y cajas, accesorios, compra de colecciones y torneos con inscripción online.',
@@ -61,9 +61,9 @@ export const tienda = {
 
   /** Colores de marca. El resto de la paleta se deriva en global.css. */
   colores: {
-    acento: '#FFB547',
-    noche: '#0B0A14',
-    nacar: '#F3F1F8',
+    acento: '#FFCB05',
+    noche: '#14264F',
+    nacar: '#F2F4F7',
   },
 
   espacios: [

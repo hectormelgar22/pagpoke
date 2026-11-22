@@ -11,7 +11,7 @@ export interface Respuestas {
   expansion: string;
 }
 export const RESPUESTAS_INICIALES: Respuestas = { tipo: 'todo', uso: '', presupuesto: '0-99999', expansion: '' };
-const CATS: Record<string, Filtros['categorias']> = { todo: [], cartas: ['cartas', 'coleccion'], sobres: ['sobres', 'cajas'], accesorios: ['accesorios', 'merch'] };
+const CATS: Record<string, Filtros['categorias']> = { todo: [], cartas: ['cartas', 'coleccion'], sobres: ['sobres', 'cajas'], accesorios: ['accesorios'] };
 
 export function recomendar(d: Respuestas, productos: Record<string, { precio: number; stock: number }>): string {
   const [min, max] = d.presupuesto.split('-').map(Number);

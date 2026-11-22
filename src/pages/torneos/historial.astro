@@ -12,7 +12,7 @@ const pasados = e.torneos.filter((t) => t.finalizado).sort((a, b) => Date.parse(
 const temps = temporadas(e.torneos);
 ---
 <Base titulo="Historial de torneos y campeones" descripcion={`Todos los torneos de Pokémon TCG jugados en ${tienda.nombre}: campeones, finalistas, participantes y cuadros finales.`} pagina="torneos">
-  <CabeceraTorneos actual="historial" etiqueta={`Historial · ${pasados.length} torneos jugados`} titulo="Cada torneo deja un campeón." texto="Consulta los resultados de todos los torneos: cuadro final, clasificación y quién se llevó el trofeo." />
+  <CabeceraTorneos actual="historial" etiqueta={`Historial · ${pasados.length} torneos jugados`} titulo="Historial de torneos" texto="Resultados de todos los torneos jugados en la tienda, con su campeón y su cuadro." />
   <section class="seccion osc" style="padding-top:clamp(2.5rem,5vw,3.5rem)">
     <div class="contenedor">
       <div class="pila" style="--pila:12px;margin-bottom:26px">

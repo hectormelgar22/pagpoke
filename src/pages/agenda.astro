@@ -14,7 +14,7 @@ const hoy = partes(ahora);
 const v = pintarAgenda(estadoInicial(ahora), hoy.y, hoy.m, new Set(Object.keys(TIPOS_EVENTO) as TipoEvento[]), ahora);
 ---
 <Base titulo="Agenda de eventos y torneos" descripcion={`Calendario de ${tienda.nombre}: torneos, liga semanal, presentaciones de nuevas colecciones, eventos especiales y tardes de juego libre en ${tienda.direccion.ciudad}.`} pagina="agenda">
-  <CabeceraTorneos actual="agenda" etiqueta="Agenda de la tienda" titulo="Lo que pasa en la tienda, día a día." texto="Torneos, liga, presentaciones y tardes de juego libre. Toca un evento para ver los detalles o añadirlo a tu calendario." />
+  <CabeceraTorneos actual="agenda" etiqueta="Torneos y eventos" titulo="Agenda" texto="Torneos, liga de los jueves, presentaciones y tardes de juego libre. Pulsa un evento para ver los detalles." />
   <section class="seccion clara" style="padding-top:clamp(2rem,4vw,3rem)">
     <div class="contenedor">
       <div class="agenda-cab">

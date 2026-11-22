@@ -18,7 +18,7 @@ const faq = [
     <div class="contenedor dos-col">
       <div class="pila" style="--pila:20px">
         <p class="etiqueta"><Fragment set:html={icono('intercambio')} />Compra · venta · intercambio · tasación</p>
-        <h1 class="h1">Tus cartas valen más de lo que crees.</h1>
+        <h1 class="h1">Compramos y tasamos tu colección</h1>
         <p class="entradilla">Cuéntanos qué tienes, mándanos unas fotos y te damos una valoración sin compromiso. Puedes cobrar en efectivo o en crédito de tienda con un 20 % extra.</p>
         <div class="fila"><a class="btn btn--acento" href="#valorar">Valorar mi colección</a><a class="btn btn--fantasma" href="#como-funciona">Cómo funciona</a></div>
         <div class="datos-tienda" style="margin-top:8px">
@@ -33,7 +33,7 @@ const faq = [
 
   <section class="seccion clara" id="como-funciona">
     <div class="contenedor">
-      <div class="cab-seccion"><div><p class="etiqueta">El proceso</p><h2 class="h2">Cuatro pasos, sin letra pequeña.</h2></div></div>
+      <div class="cab-seccion"><div><h2 class="h2">Cómo funciona</h2></div></div>
       <ol class="pasos pasos--fila" role="list">
         <li><strong>Rellenas el formulario</strong><p>Qué quieres hacer, qué tienes y unas fotos.</p></li>
         <li><strong>Te respondemos</strong><p>En menos de 24 h, con una oferta orientativa.</p></li>
@@ -46,8 +46,7 @@ const faq = [
   <section class="seccion blanca" id="valorar">
     <div class="contenedor dos-col" style="align-items:start">
       <div class="pila" style="--pila:18px">
-        <p class="etiqueta">Solicitud de valoración</p>
-        <h2 class="h2">Cuéntanos qué tienes.</h2>
+                <h2 class="h2">Pedir valoración</h2>
         <p class="entradilla">Cuanto más nos cuentes, más ajustada será la oferta. Si tienes cartas de valor, una foto de cada una por delante y por detrás nos ayuda mucho.</p>
         <ul class="garantias" role="list">
           <li><Fragment set:html={icono('escudo')} /><span><strong>Sin compromiso.</strong> Si no te convence, te llevas tus cartas.</span></li>
@@ -117,7 +116,7 @@ const faq = [
       <div class="contenedor dos-col">
         <div class="pila" style="--pila:18px">
           <p class="fila" style="--fila:10px"><span class="etiqueta">Tasación asistida</span><span class="pill pill--proximamente">Función opcional · demostración conceptual</span></p>
-          <h2 class="h2" id="t-cw">Identificar y valorar cartas en segundos, en el mostrador.</h2>
+          <h2 class="h2" id="t-cw">Tasación con CardwiseTCG</h2>
           <p class="entradilla">Las tiendas que trabajan con <strong>CardwiseTCG</strong> pueden fotografiar una carta en el mostrador, identificarla y consultar su precio de referencia para hacer ofertas más rápidas y justificadas.</p>
           <p class="nota-demo"><Fragment set:html={icono('info')} /><span>Esta web está preparada para mostrar ese servicio cuando la tienda lo active. En esta demo no hay ninguna conexión con CardwiseTCG: no se analiza ninguna imagen ni se calcula ningún precio.</span></p>
           <a class="enlace-flecha" href={tienda.cardwise.url} target="_blank" rel="noopener">Conocer CardwiseTCG <Fragment set:html={icono('externo')} /></a>
@@ -133,7 +132,7 @@ const faq = [
 
   <section class="seccion clara">
     <div class="contenedor dos-col" style="align-items:start">
-      <div class="pila" style="--pila:16px"><p class="etiqueta">Preguntas frecuentes</p><h2 class="h2">Lo que más nos preguntan.</h2></div>
+      <div class="pila" style="--pila:16px"><h2 class="h2">Preguntas frecuentes</h2></div>
       <div class="preguntas">{faq.map(([p, r]) => <details><summary>{p}</summary><p>{r}</p></details>)}</div>
     </div>
   </section>
@@ -148,24 +147,24 @@ const faq = [
     .opciones-grandes { display: grid; gap: 10px; }
     .opciones-grandes label { position: relative; cursor: pointer; }
     .opciones-grandes input { position: absolute; opacity: 0; }
-    .opciones-grandes span { display: grid; gap: 2px; padding: 16px 18px; border-radius: 16px; border: 1.5px solid var(--linea); transition: border-color .2s, background-color .2s; }
+    .opciones-grandes span { display: grid; gap: 2px; padding: 16px 18px; border-radius: 8px; border: 1.5px solid var(--linea); transition: border-color .2s, background-color .2s; }
     .opciones-grandes small { color: var(--gris); }
     .opciones-grandes input:checked + span { border-color: var(--noche); background: var(--nacar); box-shadow: inset 4px 0 0 var(--acento); }
     .opciones-grandes input:focus-visible + span { outline: 2px solid var(--acento); outline-offset: 2px; }
-    .subir-fotos { display: grid; justify-items: center; gap: 6px; padding: 28px; border-radius: 18px; border: 2px dashed var(--linea); text-align: center; cursor: pointer; transition: border-color .2s, background-color .2s; }
+    .subir-fotos { display: grid; justify-items: center; gap: 6px; padding: 28px; border-radius: 8px; border: 2px dashed var(--linea); text-align: center; cursor: pointer; transition: border-color .2s, background-color .2s; }
     .subir-fotos:hover, .subir-fotos:focus-within { border-color: var(--noche); background: var(--nacar); }
     .subir-fotos .i { width: 30px; height: 30px; }
     .subir-fotos small { color: var(--gris); }
     .miniaturas { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
-    .miniaturas li { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: var(--nacar); }
+    .miniaturas li { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: var(--nacar); }
     .miniaturas img { width: 100%; height: 100%; object-fit: cover; }
-    .miniaturas button { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(11,10,20,.75); color: #fff; }
+    .miniaturas button { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(20,38,79,.75); color: #fff; }
     .miniaturas button .i { width: 15px; height: 15px; }
     .datos-tienda li { list-style: none; }
     .cw-flujo { display: grid; gap: 12px; }
-    .cw-flujo li { display: flex; gap: 16px; align-items: flex-start; padding: 20px; border-radius: 20px; background: var(--noche-2); border: 1px solid var(--linea-osc); }
+    .cw-flujo li { display: flex; gap: 16px; align-items: flex-start; padding: 20px; border-radius: 8px; background: var(--noche-2); border: 1px solid var(--linea-osc); }
     .cw-flujo p { color: var(--niebla); font-size: .92rem; margin-top: 4px; }
-    .cw-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--holo); color: var(--noche); flex: none; }
+    .cw-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 8px; background: var(--holo); color: var(--noche); flex: none; }
   </style>
   <script>
     import '../scripts/vende.ts';

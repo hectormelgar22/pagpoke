@@ -1,9 +1,9 @@
 /* CATÁLOGO DE DEMOSTRACIÓN.
    Nombres de cartas y expansiones reales (como en cualquier tienda), precios y stock de ejemplo.
-   Las imágenes son ilustraciones propias (src/pages/arte/[id].svg.ts), nunca arte oficial.
+   Imágenes: public/productos/<id>.webp (fotos de producto reales, solo para la demo privada).
    Precio y stock iniciales: el panel los modifica en el navegador. */
 
-export type Categoria = 'cartas' | 'sobres' | 'cajas' | 'coleccion' | 'accesorios' | 'merch';
+export type Categoria = 'cartas' | 'sobres' | 'cajas' | 'coleccion' | 'accesorios';
 export type Rareza = 'doble-rara' | 'ultra-rara' | 'ilustracion-rara' | 'ilustracion-especial' | 'hiper-rara' | 'poco-comun' | 'graduada';
 export type Idioma = 'ES' | 'EN' | 'JP';
 export type Uso = 'coleccion' | 'jugar' | 'regalo' | 'empezar';
@@ -37,7 +37,6 @@ export const CATEGORIAS: { id: Categoria; nombre: string; plural: string; texto:
   { id: 'cajas', nombre: 'Caja', plural: 'Cajas y colecciones', texto: 'Cajas de entrenador élite, displays, latas y mazos.' },
   { id: 'coleccion', nombre: 'Pieza de colección', plural: 'Coleccionismo', texto: 'Cartas graduadas y producto sellado difícil de encontrar.' },
   { id: 'accesorios', nombre: 'Accesorio', plural: 'Accesorios', texto: 'Fundas, archivadores, deck boxes y tapetes.' },
-  { id: 'merch', nombre: 'Merchandising', plural: 'Merchandising', texto: 'Ropa y objetos de la tienda.' },
 ];
 
 export const EXPANSIONES: { id: string; nombre: string; codigo: string; anio: number }[] = [
@@ -156,16 +155,16 @@ export const PRODUCTOS: Producto[] = [
   p('upc-151', 'Colección Ultra Premium 151', 'cajas', '151', 159, 0,
     { tipo: 'caja', c1: '#FFD0F0', c2: '#4A1F7A', marca: 'UPC' }, 'Colección de lujo con 16 sobres de 151, cartas promocionales y accesorios metálicos.',
     { idioma: 'ES', usos: ['coleccion', 'regalo'], alta: 200, detalles: [['Contenido', '16 sobres, cartas promocionales, moneda y tapete']] }),
-  p('lata-destinos', 'Lata Destinos de Paldea', 'cajas', 'destinos', 24.95, 8,
-    { tipo: 'lata', c1: '#FFD84D', c2: '#5A2A10', marca: 'PAF' }, 'Lata metálica con 4 sobres y una carta promocional.',
+  p('lata-destinos', 'Mini lata Destinos de Paldea', 'cajas', 'destinos', 24.95, 8,
+    { tipo: 'lata', c1: '#FFD84D', c2: '#5A2A10', marca: 'PAF' }, 'Mini lata con 2 sobres de Destinos de Paldea y una carta de ilustración.',
     { idioma: 'ES', usos: ['regalo'], alta: 90 }),
   p('blister-rivales', 'Blíster 3 sobres Rivales Predestinados', 'cajas', 'rivales', 17.95, 10,
     { tipo: 'blister', c1: '#FF7A7A', c2: '#2A1430', marca: 'DRI' }, 'Tres sobres, carta promocional y moneda.',
     { idioma: 'ES', usos: ['regalo', 'coleccion'], alta: 40 }),
-  p('mazos-iniciacion', 'Mazos de iniciación para 2 jugadores', 'cajas', null, 19.95, 7,
-    { tipo: 'mazo', c1: '#8CF0B0', c2: '#173B8C' }, 'Dos mazos listos para jugar y una guía para aprender en una tarde.',
-    { idioma: 'ES', usos: ['empezar', 'regalo', 'jugar'], alta: 30, detalles: [['Contenido', '2 mazos de 60 cartas, guía y contadores']] }),
-  p('mazo-liga', 'Mazo de batalla de Liga', 'cajas', null, 29.95, 5,
+  p('mazos-iniciacion', 'Battle Academy 2024 (3 mazos)', 'cajas', null, 19.95, 7,
+    { tipo: 'mazo', c1: '#8CF0B0', c2: '#173B8C' }, 'Caja para aprender a jugar entre dos: tres mazos listos, tapete y guía paso a paso.',
+    { idioma: 'ES', usos: ['empezar', 'regalo', 'jugar'], alta: 30, detalles: [['Contenido', '3 mazos de 60 cartas, tapete, guía y contadores']] }),
+  p('mazo-liga', 'League Battle Deck Mega Lucario ex', 'cajas', null, 29.95, 5,
     { tipo: 'mazo', c1: '#FFB547', c2: '#3A1C8C' }, 'Mazo competitivo listo para jugar torneos, con cartas de gran nivel.',
     { idioma: 'ES', usos: ['jugar', 'empezar'], alta: 25 }),
 
@@ -184,39 +183,28 @@ export const PRODUCTOS: Producto[] = [
     { idioma: 'JP', etiquetas: ['mas-buscado'], usos: ['coleccion'], alta: 20, detalles: [['Contenido', '20 sobres de 7 cartas']] }),
 
   // ——— Accesorios ———
-  p('fundas-mate', 'Fundas mate premium (100)', 'accesorios', null, 11.95, 40,
-    { tipo: 'fundas', c1: '#2C2A40', c2: '#FFB547' }, 'Fundas de tamaño estándar con acabado mate, el estándar en torneos.',
-    { usos: ['jugar', 'empezar'], alta: 60, detalles: [['Tamaño', '66 × 91 mm'], ['Cantidad', '100 fundas']] }),
-  p('fundas-ajustadas', 'Fundas ajustadas transparentes (100)', 'accesorios', null, 4.5, 55,
-    { tipo: 'fundas', c1: '#DDE6F7', c2: '#7FA8FF' }, 'Primera capa para proteger las cartas antes de la funda exterior.',
+  p('fundas-mate', 'Fundas Ultra PRO Mega Charizard X (65)', 'accesorios', null, 11.95, 40,
+    { tipo: 'fundas', c1: '#2C2A40', c2: '#FFB547' }, 'Fundas de tamaño estándar con ilustración, válidas para torneo.',
+    { usos: ['jugar', 'empezar'], alta: 60, detalles: [['Tamaño', '66 × 91 mm'], ['Cantidad', '65 fundas']] }),
+  p('fundas-ajustadas', 'Fundas Ultra PRO Lillie y Clefairy (65)', 'accesorios', null, 4.5, 55,
+    { tipo: 'fundas', c1: '#DDE6F7', c2: '#7FA8FF' }, 'Fundas de tamaño estándar con ilustración de Lillie y Clefairy.',
     { usos: ['coleccion', 'jugar'], alta: 60 }),
-  p('archivador-9', 'Archivador de 9 bolsillos (360 cartas)', 'accesorios', null, 34.95, 9,
+  p('archivador-9', 'Archivador PRO-Binder Charizard (9 bolsillos)', 'accesorios', null, 34.95, 9,
     { tipo: 'archivador', c1: '#1C1A2B', c2: '#FFB547' }, 'Archivador con cremallera y páginas cosidas que no dañan las cartas.',
     { usos: ['coleccion', 'regalo'], alta: 60, detalles: [['Capacidad', '360 cartas (720 a doble cara)']] }),
-  p('deckbox', 'Deck box con hueco para dados', 'accesorios', null, 19.95, 12,
-    { tipo: 'deckbox', c1: '#3A1C8C', c2: '#7DE3FF' }, 'Caja para 100 cartas enfundadas con compartimento para dados y marcadores.',
+  p('deckbox', 'Deck box Ultra PRO Charmander', 'accesorios', null, 19.95, 12,
+    { tipo: 'deckbox', c1: '#3A1C8C', c2: '#7DE3FF' }, 'Caja para unas 80 cartas enfundadas.',
     { usos: ['jugar', 'regalo'], alta: 60 }),
-  p('tapete-noche', 'Tapete de juego Noche Estelar', 'accesorios', null, 24.95, 6,
+  p('tapete-noche', 'Tapete Ultra PRO Pikachu', 'accesorios', null, 24.95, 6,
     { tipo: 'tapete', c1: '#141530', c2: '#7DE3FF' }, 'Tapete de 60 × 35 cm con base de goma antideslizante.',
     { usos: ['jugar', 'regalo'], alta: 60 }),
-  p('toploaders', 'Toploaders rígidos (25)', 'accesorios', null, 4.95, 0,
+  p('toploaders', 'Toploaders rígidos 3×4 (25)', 'accesorios', null, 4.95, 0,
     { tipo: 'toploader', c1: '#E8EEF8', c2: '#7FA8FF' }, 'Fundas rígidas para guardar o enviar tus mejores cartas.',
     { usos: ['coleccion'], alta: 60 }),
   p('caja-almacen', 'Caja de almacenamiento para 800 cartas', 'accesorios', null, 6.95, 30,
     { tipo: 'almacen', c1: '#F3F1F8', c2: '#6F6656' }, 'Caja de cartón resistente con separadores.',
     { usos: ['coleccion'], alta: 60 }),
 
-  // ——— Merchandising de la tienda ———
-  p('camiseta-destello', 'Camiseta Destello «Abre algo especial»', 'merch', null, 22, 18,
-    { tipo: 'camiseta', c1: '#0B0A14', c2: '#FFB547' }, 'Camiseta de algodón orgánico con el lema de la tienda.',
-    { usos: ['regalo'], alta: 10, detalles: [['Tallas', 'S a XXL']] }),
-  p('tapete-destello', 'Tapete oficial de la tienda', 'merch', null, 29.95, 11,
-    { tipo: 'tapete', c1: '#0B0A14', c2: '#FFB547' }, 'El tapete de nuestros torneos, con zonas marcadas para jugar.',
-    { etiquetas: ['novedad'], usos: ['jugar', 'regalo'], alta: 6 }),
-  p('taza-destello', 'Taza Destello', 'merch', null, 12.95, 20,
-    { tipo: 'taza', c1: '#F3F1F8', c2: '#3A1C8C' }, 'Taza de cerámica de 330 ml.', { usos: ['regalo'], alta: 40 }),
-  p('tote-destello', 'Bolsa de tela Destello', 'merch', null, 14.95, 15,
-    { tipo: 'tote', c1: '#E9E3D2', c2: '#0B0A14' }, 'Bolsa resistente con hueco para archivador y deck box.', { usos: ['regalo'], alta: 40 }),
 ];
 
 export const productoPorId = new Map(PRODUCTOS.map((x) => [x.id, x]));

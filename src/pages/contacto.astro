@@ -24,7 +24,7 @@ const canales = [
 <Base titulo="Contacto, horario y cómo llegar" descripcion={`Contacta con ${tienda.nombre} en ${tienda.direccion.ciudad}: WhatsApp, teléfono, email, horario de apertura y mapa.`} pagina="contacto" migas={[{ nombre: 'Contacto' }]} jsonld={ld}>
   <section class="contenedor" style="padding-block:clamp(1.5rem,4vw,3rem) clamp(2rem,4vw,3rem)">
     <p class="etiqueta"><span class="punto-vivo" data-punto-tienda></span><span data-estado-tienda>Horario de la tienda</span></p>
-    <h1 class="h1" style="margin-top:14px">Hablemos.</h1>
+    <h1 class="h1" style="margin-top:14px">Contacto</h1>
     <p class="entradilla" style="margin-top:14px">¿Buscas una carta, quieres reservar o tienes dudas sobre un torneo? Escríbenos por donde te venga mejor.</p>
   </section>
   <section class="contenedor" style="padding-bottom:clamp(3rem,6vw,5rem)">
@@ -59,9 +59,9 @@ const canales = [
   </section>
   <style is:global>
     .canales { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
-    .canal { display: grid; gap: 6px; align-content: start; padding: 22px; border-radius: 22px; background: var(--blanco); border: 1px solid var(--linea); text-decoration: none; transition: transform .35s var(--ease), box-shadow .35s; }
+    .canal { display: grid; gap: 6px; align-content: start; padding: 22px; border-radius: 8px; background: var(--blanco); border: 1px solid var(--linea); text-decoration: none; transition: transform .35s var(--ease), box-shadow .35s; }
     .canal:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
-    .canal-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--noche); color: var(--acento); margin-bottom: 8px; }
+    .canal-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 8px; background: var(--noche); color: var(--acento); margin-bottom: 8px; }
     .canal-t { font-weight: 700; font-size: 1.1rem; }
     .canal-d { color: var(--gris); font-size: .92rem; overflow-wrap: anywhere; }
     .canal .enlace-flecha { margin-top: 8px; }

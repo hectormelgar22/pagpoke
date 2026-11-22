@@ -13,7 +13,7 @@ npm run preview      # sirve dist/ en http://localhost:4321
 
 ## Recorrido para enseñarla en una reunión (5 minutos)
 
-1. **Portada**: el sobre que se abre, la franja con datos en vivo (abierto/cerrado, próximo torneo con plazas) y el asistente de compra.
+1. **Portada**: banner de la última expansión con producto real, franja con datos en vivo (abierto/cerrado, próximo torneo con plazas), categorías y el buscador de regalos.
 2. **Catálogo**: busca «charizard», filtra por «solo con stock», ordena por precio. Abre una ficha y pulsa **Reservar** (prepara el WhatsApp).
 3. **Torneos** → *Copa Destello (en curso)*: el cuadro eliminatorio; toca un jugador para seguir su camino.
 4. **Inscripción**: abre *Copa Destello nº 020*, inscríbete y mira cómo pasa de 18/32 a 19/32.
@@ -24,8 +24,8 @@ npm run preview      # sirve dist/ en http://localhost:4321
 
 | Área | Qué hace |
 |---|---|
-| Catálogo | 41 productos en 6 categorías. Buscador sin tildes, filtros (categoría, expansión, rareza, idioma, stock, precio, uso), orden, filtros en la URL (se pueden compartir), estado vacío con WhatsApp. |
-| Ficha de producto | Ilustración con efecto holográfico, estado, rareza, idioma, stock, datos estructurados `Product`. |
+| Catálogo | 37 productos con foto real en 5 categorías. Buscador sin tildes, filtros (categoría, expansión, rareza, idioma, stock, precio, uso), orden, filtros en la URL (se pueden compartir), estado vacío con WhatsApp. |
+| Ficha de producto | Foto real, estado, rareza, idioma, stock, datos estructurados `Product`. |
 | Reservas | Formulario → mensaje de WhatsApp con el producto y los datos. Valida stock. Llega al panel. |
 | Favoritos | Corazón en cada producto, cajón lateral, se recuerdan al volver. «Preguntar por todos» por WhatsApp. |
 | Avisos de stock | En productos agotados: «Avísame». El panel lo muestra y, al reponer, avisa de cuántos clientes esperan. No se envían notificaciones automáticas. |
@@ -63,7 +63,8 @@ npm run preview      # sirve dist/ en http://localhost:4321
 - **Motor de torneos** (`src/lib/`): `cuadro.ts`, `suizo.ts`, `torneo.ts` y `ranking.ts` son funciones puras que trabajan sobre datos; las vistas (`src/lib/vistas/`) los pintan. Las mismas plantillas se usan al generar la web y en el navegador.
 - **Estado de la demo** (`src/lib/almacen.ts`): datos de ejemplo + cambios del visitante en `localStorage`. Mismo estado para web pública y panel (también entre pestañas). Para un backend real basta con sustituir `cargar()`/`mutar()` por llamadas a una API con la misma forma de datos (`src/lib/tipos.ts`).
 - **Fechas relativas**: en modo demo los torneos se colocan alrededor de «hoy», así la demo nunca caduca. Para una tienda real: `demo.fechasRelativas: false` y fechas ISO normales.
-- **Imágenes**: fotos generadas con IA para esta demo (sin marcas ni personajes) servidas en AVIF/WebP con varios tamaños; ilustraciones de producto propias en SVG (`src/lib/arte.ts`). Ningún logotipo ni arte oficial.
+- **Imágenes de producto**: fotos reales de cartas, sobres, cajas y accesorios descargadas del catálogo de TCGplayer con `node scripts/descargar-imagenes.mjs` (`public/productos/<id>.webp`). **Tienen derechos de terceros: solo para la demo privada; no publicar la web sin sustituirlas o tener permiso.** Fotos de la tienda: generadas con IA (`src/assets/fotos/`).
+- **Tipografía**: Barlow y Barlow Condensed.
 
 ## Calidad
 
@@ -82,8 +83,8 @@ Lighthouse (22-11-2026, Lighthouse 12, Chrome 157, build de producción servida 
 
 1. `src/data/tienda.ts`: nombre, contacto, WhatsApp, dirección y coordenadas, horario, redes, colores, espacios y diferenciales. Poner `demo.activa: false` y `demo.fechasRelativas: false`.
 2. Logotipo: `src/components/Logo.astro` y `public/favicon.svg`.
-3. Fotos: sustituir las de `src/assets/fotos/` (mismo nombre) y revisar los textos alternativos de `src/data/fotos.ts`. Imagen para redes: `public/og.jpg`.
-4. Catálogo: `src/data/catalogo.ts` (se pueden usar fotos propias de producto en lugar de las ilustraciones).
+3. Fotos: sustituir las de `src/assets/fotos/` (mismo nombre) y revisar los textos alternativos de `src/data/fotos.ts`. Imagen para redes: `public/og.jpg`. Fotos de producto en `public/productos/` (las propias de la tienda o con permiso).
+4. Catálogo: `src/data/catalogo.ts` (cada producto usa `public/productos/<id>.webp`).
 5. Torneos y agenda: sustituir `torneos.semilla.json` por los torneos reales (o conectar un backend) y revisar `eventos.ts`.
 6. Textos legales: `src/pages/legal/[doc].astro` (plantilla, revisar con un asesor).
 7. Dominio: `SITE_URL=https://dominio-de-la-tienda.es npm run build` (canonical, sitemap, robots y datos estructurados usan este dominio).

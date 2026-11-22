@@ -5,26 +5,8 @@ import { guardado, productosEstado } from '../lib/estado-ligero.ts';
 import { claveDia } from '../lib/fechas.ts';
 import { destacado, tarjetaTorneo, podio, textoProximo, proximoConPlazas, rutaTorneo } from '../lib/vistas/torneo.ts';
 import { calcularRanking, temporadaDe } from '../lib/ranking.ts';
-import { iniciarCuentas, iniciarTilt } from './efectos.ts';
+import { iniciarCuentas } from './efectos.ts';
 import { pintarProductos } from './app.ts';
-
-/* Hero: la escena sigue al cursor (solo con ratón y si el usuario acepta movimiento) */
-const escena = $('.hero-escena');
-const hero = $('[data-hero]');
-if (escena && hero && mueve() && matchMedia('(pointer: fine)').matches) {
-  hero.addEventListener('pointermove', (ev) => {
-    const r = hero.getBoundingClientRect();
-    const x = (ev.clientX - r.left) / r.width - 0.5;
-    const y = (ev.clientY - r.top) / r.height - 0.5;
-    escena.style.setProperty('--ry', `${x * 14}deg`);
-    escena.style.setProperty('--rx', `${-y * 8}deg`);
-    escena.style.setProperty('--mx', `${50 + x * 80}%`);
-  });
-  hero.addEventListener('pointerleave', () => {
-    escena.style.setProperty('--ry', '0deg');
-    escena.style.setProperty('--rx', '0deg');
-  });
-}
 
 /* Torneos con el estado guardado (inscripciones hechas en esta demo) */
 function pintarTorneos() {
@@ -96,7 +78,6 @@ if (carrusel) {
   flechas();
 }
 
-iniciarTilt();
 
 /* Asistente de compra: reglas sencillas sobre el catálogo real */
 const form = $<HTMLFormElement>('[data-asistente]');

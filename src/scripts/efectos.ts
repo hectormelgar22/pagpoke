@@ -23,25 +23,6 @@ export function iniciarCuentas(raiz: ParentNode = document) {
 }
 iniciarCuentas();
 
-export function iniciarTilt(raiz: ParentNode = document) {
-  if (!mueve() || !matchMedia('(pointer: fine)').matches) return;
-  for (const el of $$('[data-tilt]', raiz)) {
-    el.addEventListener('pointermove', (ev) => {
-      const r = el.getBoundingClientRect();
-      const x = (ev.clientX - r.left) / r.width;
-      const y = (ev.clientY - r.top) / r.height;
-      el.style.setProperty('--ry', `${(x - 0.5) * 22}deg`);
-      el.style.setProperty('--rx', `${(0.5 - y) * 18}deg`);
-      el.style.setProperty('--mx', `${x * 100}%`);
-      el.style.setProperty('--my', `${y * 100}%`);
-    });
-    el.addEventListener('pointerleave', () => {
-      el.style.setProperty('--ry', '0deg');
-      el.style.setProperty('--rx', '0deg');
-    });
-  }
-}
-
 /** Cuadros: navegación por rondas en móvil y "seguir a un jugador". */
 export function iniciarCuadros(raiz: ParentNode = document) {
   for (const c of $$('[data-cuadro]', raiz)) {

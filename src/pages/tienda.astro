@@ -18,7 +18,7 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
     <div class="tienda-hero-foto"><Foto src={FOTOS.tienda.src} alt={FOTOS.tienda.alt} prioridad sizes="100vw" /></div>
     <div class="contenedor tienda-hero-texto">
       <p class="etiqueta">{tienda.nombre} · desde {tienda.desde} · {tienda.direccion.ciudad}</p>
-      <h1 class="h1">Una tienda hecha por coleccionistas, para coleccionistas.</h1>
+      <h1 class="h1">Conoce la tienda</h1>
       <p class="entradilla">Empezamos con una vitrina y una mesa. Hoy tenemos {tienda.espacios[0].dato} para jugar, cientos de cartas revisadas una a una y una comunidad que llena la tienda cada semana.</p>
       <div class="fila"><a class="btn btn--acento" href="#visita">Cómo llegar</a><a class="btn btn--fantasma" href="#galeria">Ver fotos</a></div>
     </div>
@@ -27,8 +27,7 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
   <section class="seccion blanca">
     <div class="contenedor dos-col" style="align-items:start">
       <div class="pila" style="--pila:18px">
-        <p class="etiqueta">Nuestra forma de trabajar</p>
-        <h2 class="h2">Precio claro, estado revisado y tiempo para hablar de cartas.</h2>
+                <h2 class="h2">Cómo trabajamos</h2>
       </div>
       <div class="pila" style="--pila:16px">
         <p class="entradilla" style="color:var(--tinta)">Creemos que una tienda de cartas tiene que ser un sitio donde te sientas cómodo preguntando, tanto si buscas tu primer mazo como una carta graduada para tu colección.</p>
@@ -44,7 +43,7 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
 
   <section class="seccion osc">
     <div class="contenedor">
-      <div class="cab-seccion"><div><p class="etiqueta">Los espacios</p><h2 class="h2">Tres zonas, una misma idea: que estés a gusto.</h2></div></div>
+      <div class="cab-seccion"><div><h2 class="h2">El local</h2></div></div>
       <div class="espacios">
         {[FOTOS.zonaJuego, FOTOS.vitrina, FOTOS.tasacion].map((f, i) => (
           <article class="espacio" data-revela style={`--retraso:${i * 90}ms`}>
@@ -58,7 +57,7 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
 
   <section class="seccion clara" id="galeria">
     <div class="contenedor">
-      <div class="cab-seccion"><div><p class="etiqueta">Galería · {galeria.length} fotos</p><h2 class="h2">Así es un día cualquiera en la tienda.</h2></div><p class="entradilla" style="max-width:36ch">Toca una foto para verla en grande.</p></div>
+      <div class="cab-seccion"><div><p class="etiqueta">Galería · {galeria.length} fotos</p><h2 class="h2">Fotos de la tienda</h2></div><p class="entradilla" style="max-width:36ch">Toca una foto para verla en grande.</p></div>
       <div class="galeria">
         {galeria.map((g, i) => (
           <button type="button" class={`galeria-item ${g.c}`} data-foto={i} aria-label={`Ampliar foto: ${g.f.alt}`}>
@@ -73,7 +72,7 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
     <div class="contenedor dos-col">
       <div class="pila" style="--pila:18px">
         <p class="etiqueta"><span class="punto-vivo" data-punto-tienda></span><span data-estado-tienda>Horario</span></p>
-        <h2 class="h2">Te esperamos.</h2>
+        <h2 class="h2">Cómo llegar</h2>
         <p class="entradilla">{direccionCompleta}. {tienda.direccion.comoLlegar}</p>
         <Horario />
         <div class="fila"><a class="btn btn--wa" href={enlaceWhatsApp()} target="_blank" rel="noopener"><Fragment set:html={icono('whatsapp')} />Escríbenos</a><a class="btn btn--fantasma" href="/contacto/">Contacto</a></div>
@@ -95,16 +94,16 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
     .tienda-hero { position: relative; isolation: isolate; min-height: min(78svh, 720px); display: flex; align-items: flex-end; padding-block: clamp(4rem, 10vw, 7rem) clamp(2.5rem, 6vw, 4.5rem); overflow: hidden; }
     .tienda-hero-foto { position: absolute; inset: 0; z-index: -2; }
     .tienda-hero-foto img { width: 100%; height: 100%; object-fit: cover; }
-    .tienda-hero::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(11,10,20,.95) 10%, rgba(11,10,20,.35) 60%, rgba(11,10,20,.55)); }
+    .tienda-hero::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(20,38,79,.95) 10%, rgba(20,38,79,.35) 60%, rgba(20,38,79,.55)); }
     .tienda-hero-texto { display: grid; gap: 20px; }
     .tienda-hero h1 { max-width: 16ch; }
     .tienda-hero .entradilla { color: #d9d5e8; }
     .diferenciales { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
-    .diferenciales li { display: grid; gap: 10px; align-content: start; padding: 22px; border-radius: 20px; background: var(--nacar); }
+    .diferenciales li { display: grid; gap: 10px; align-content: start; padding: 22px; border-radius: 8px; background: var(--nacar); }
     .diferenciales p { color: var(--gris); font-size: .94rem; }
-    .dif-ico { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 14px; background: var(--noche); color: var(--acento); }
+    .dif-ico { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 8px; background: var(--noche); color: var(--acento); }
     .espacios { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
-    .espacio { border-radius: 24px; overflow: hidden; background: var(--noche-2); border: 1px solid var(--linea-osc); }
+    .espacio { border-radius: 8px; overflow: hidden; background: var(--noche-2); border: 1px solid var(--linea-osc); }
     .espacio-foto { aspect-ratio: 4 / 3; overflow: hidden; }
     .espacio-foto img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
     .espacio:hover .espacio-foto img { transform: scale(1.05); }
@@ -112,7 +111,7 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
     .espacio-texto p { color: var(--niebla); font-size: .94rem; }
     .espacio-dato { font-size: 1.6rem; font-weight: 700; color: var(--acento); letter-spacing: -.03em; }
     .galeria { display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr); grid-auto-rows: clamp(120px, 22vw, 240px); }
-    .galeria-item { position: relative; padding: 0; border: 0; border-radius: 18px; overflow: hidden; cursor: zoom-in; background: var(--nacar-2); }
+    .galeria-item { position: relative; padding: 0; border: 0; border-radius: 8px; overflow: hidden; cursor: zoom-in; background: var(--nacar-2); }
     .galeria-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--ease); }
     .galeria-item:hover img { transform: scale(1.06); }
     @media (min-width: 900px) {
@@ -121,7 +120,7 @@ const iconos = ['escudo', 'lupa', 'trofeo', 'reloj'];
     }
     .visor { width: min(100% - 24px, 1100px); }
     .visor-fig { padding: 0 22px; display: grid; gap: 12px; }
-    .visor-foto img { width: 100%; max-height: 68svh; object-fit: contain; border-radius: 14px; }
+    .visor-foto img { width: 100%; max-height: 68svh; object-fit: contain; border-radius: 8px; }
     .visor-fig figcaption { color: var(--niebla); font-size: .92rem; }
     .visor-nav { justify-content: space-between; padding: 16px 22px 22px; }
   </style>

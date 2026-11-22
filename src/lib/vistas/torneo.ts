@@ -87,7 +87,7 @@ export function destacado(t: Torneo, ahora: Date) {
   const futuro = T.esFuturo(t, ahora);
   return html`<article class="destacado tema-${t.tema}" data-torneo="${t.id}">
   <div class="destacado-texto">
-    <div class="fila"><span class="etiqueta">${raw(icono('destello'))}Próximo gran evento · ${numTorneo(t)}</span>${pillEstado(e)}</div>
+    <div class="fila"><span class="etiqueta">${raw(icono('trofeo'))}Torneo destacado · ${numTorneo(t)}</span>${pillEstado(e)}</div>
     <h3 class="h2">${t.nombre}</h3>
     <p class="entradilla">${t.resumen}</p>
     <ul class="destacado-datos" role="list">

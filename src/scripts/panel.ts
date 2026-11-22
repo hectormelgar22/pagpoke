@@ -134,7 +134,7 @@ function vistaProductos(e: EstadoDemo) {
         const s = e.productos[p.id];
         const st = textoStock(s.stock);
         const al = e.alertas.filter((a) => a.productoId === p.id && !a.avisado).length;
-        return `<tr><td><div class="prod-celda"><img src="/arte/${p.id}.svg" width="40" height="50" alt="" loading="lazy" /><span><strong>${esc(p.nombre)}</strong><small>${esc(metaProducto(p))}${p.numero ? ` · ${esc(p.numero)}` : ''}</small></span></div></td>
+        return `<tr><td><div class="prod-celda"><img src="/productos/${p.id}.webp" width="40" height="40" alt="" loading="lazy" /><span><strong>${esc(p.nombre)}</strong><small>${esc(metaProducto(p))}${p.numero ? ` · ${esc(p.numero)}` : ''}</small></span></div></td>
           <td><label class="solo-lector" for="pr-${p.id}">Precio de ${esc(p.nombre)}</label><input class="entrada-mini" id="pr-${p.id}" type="number" min="0" step="0.05" value="${s.precio}" data-precio-input="${p.id}" data-foco="pr-${p.id}" /></td>
           <td><div class="contador-stock"><button type="button" data-stock-delta="-1" data-id="${p.id}" aria-label="Quitar una unidad de ${esc(p.nombre)}" data-foco="sm-${p.id}">${icono('menos')}</button>
             <label class="solo-lector" for="st-${p.id}">Stock de ${esc(p.nombre)}</label><input id="st-${p.id}" type="number" min="0" step="1" value="${s.stock}" data-stock-input="${p.id}" data-foco="st-${p.id}" />

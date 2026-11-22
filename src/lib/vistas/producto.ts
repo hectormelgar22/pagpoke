@@ -11,7 +11,7 @@ export function textoStock(stock: number): { texto: string; clase: 'agotado' | '
 }
 
 export const urlProducto = (p: Producto) => `/catalogo/${p.slug}/`;
-export const altArte = (p: Producto) => `Ilustración de ${p.nombre}`;
+export const altArte = (p: Producto) => `${p.nombre}${p.numero ? ` ${p.numero}` : ''}`;
 
 export function metaProducto(p: Producto): string {
   return [categoriaPorId.get(p.categoria)?.nombre, p.expansion && expansionPorId.get(p.expansion)?.nombre, p.idioma]
@@ -36,7 +36,7 @@ export function tarjetaProducto(p: Producto, estado: { precio: number; stock: nu
   const etiqueta = p.etiquetas.includes('novedad') ? 'Novedad' : p.etiquetas.includes('mas-buscado') ? 'Muy buscado' : '';
   return html`<article class="producto" data-id="${p.id}" style="--c1:${p.arte.c1};--c2:${p.arte.c2}">
   <div class="producto-arte">
-    <img src="/arte/${p.id}.svg" width="400" height="500" alt="${altArte(p)}" loading="${opciones.cargaPrioritaria ? 'eager' : 'lazy'}" decoding="async" />
+    <img src="/productos/${p.id}.webp" width="600" height="600" alt="${altArte(p)}" loading="${opciones.cargaPrioritaria ? 'eager' : 'lazy'}" decoding="async" />
     ${etiqueta ? html`<span class="sello">${etiqueta}</span>` : ''}
     ${rarezaHTML(p)}
   </div>
@@ -56,7 +56,7 @@ export function tarjetaProducto(p: Producto, estado: { precio: number; stock: nu
 
 export function fichaResumen(p: Producto, estado: { precio: number; stock: number }) {
   return html`<div class="mini-producto">
-  <img src="/arte/${p.id}.svg" width="80" height="100" alt="" />
+  <img src="/productos/${p.id}.webp" width="80" height="80" alt="" />
   <div><p class="producto-meta">${metaProducto(p)}</p><p class="h3">${p.nombre}</p>
   <p class="mono" style="margin-top:4px">${euros(estado.precio)} · ${textoStock(estado.stock).texto}</p></div>
 </div>`;
