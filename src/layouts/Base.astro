@@ -1,7 +1,8 @@
 ---
 import '../styles/base.css';
 import '../styles/tienda.css';
-import archivo from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+// Fuente de titulares recortada a los pesos (700-800) y anchos (112-125 %) que usa la web: 30 KB en lugar de 90 KB
+import archivo from '../assets/fuentes/archivo-display.woff2?url';
 import onest from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
 import mono from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import Logo from '../components/Logo.astro';
@@ -9,6 +10,7 @@ import { tienda, direccionCompleta, enlaceWhatsApp, DIAS_SEMANA } from '../data/
 import { CATEGORIAS } from '../data/catalogo.ts';
 import { icono } from '../lib/iconos.ts';
 import { tramosTexto } from '../lib/horario.ts';
+import { claveDia } from '../lib/fechas.ts';
 
 interface Miga { nombre: string; url?: string }
 interface Props {
@@ -71,7 +73,7 @@ if (migas?.length) {
     <link rel="preload" href={archivo} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={onest} as="font" type="font/woff2" crossorigin />
     <style set:html={`
-      @font-face{font-family:'Archivo Variable';font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(${archivo}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+      @font-face{font-family:'Archivo Variable';font-style:normal;font-display:swap;font-weight:700 800;font-stretch:112% 125%;src:url(${archivo}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
       @font-face{font-family:'Onest Variable';font-style:normal;font-display:swap;font-weight:100 900;src:url(${onest}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
       @font-face{font-family:'JetBrains Mono Variable';font-style:normal;font-display:swap;font-weight:100 800;src:url(${mono}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
       :root{--acento:${tienda.colores.acento};--noche:${tienda.colores.noche};--nacar:${tienda.colores.nacar}}
@@ -80,7 +82,7 @@ if (migas?.length) {
     {ld.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(ld.length === 1 ? ld[0] : ld)} />}
     <slot name="head" />
   </head>
-  <body data-pagina={pagina}>
+  <body data-pagina={pagina} data-generado={claveDia(new Date())}>
     <a class="saltar" href="#contenido">Saltar al contenido</a>
     {tienda.demo.activa && (
       <p class="franja-demo">

@@ -1,6 +1,8 @@
 /* ===== Panel del propietario ===== */
-.panel { display: grid; min-height: calc(100svh - var(--cab) - 34px); background: var(--nacar); }
+.panel { display: grid; grid-template-columns: minmax(0, 1fr); min-height: calc(100svh - var(--cab) - 34px); background: var(--nacar); }
 @media (min-width: 1000px) { .panel { grid-template-columns: 250px minmax(0, 1fr); } }
+.caja-cab > *, .panel-cab > * { min-width: 0; }
+.gestion-cab { min-width: 0; overflow-wrap: anywhere; }
 .panel-nav { background: var(--noche); color: var(--nacar); padding: 18px 14px; display: flex; gap: 6px; overflow-x: auto; position: sticky; top: var(--cab); z-index: 5; }
 @media (min-width: 1000px) { .panel-nav { flex-direction: column; overflow: visible; height: calc(100svh - var(--cab)); padding: 26px 16px; } }
 .panel-nav a { display: flex; align-items: center; gap: 10px; flex: none; padding: 11px 14px; border-radius: 12px; color: var(--niebla); text-decoration: none; font-weight: 600; font-size: 0.94rem; }
@@ -11,6 +13,7 @@
 .panel-nav .separador { display: none; }
 @media (min-width: 1000px) { .panel-nav .separador { display: block; margin-top: auto; padding: 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.05); font-size: 0.8rem; color: var(--niebla); } }
 .panel-main { padding: clamp(18px, 3vw, 36px); min-width: 0; display: grid; gap: 22px; align-content: start; }
+#panel-contenido { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; }
 .panel-aviso { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 16px; background: rgba(167, 139, 250, 0.14); border: 1px solid rgba(167, 139, 250, 0.35); font-size: 0.9rem; }
 .panel-aviso p { display: flex; gap: 10px; align-items: flex-start; max-width: 80ch; }
 .panel-aviso .i { color: var(--prox); }
@@ -23,13 +26,14 @@
 .kpi span { font-size: 0.88rem; color: var(--gris); }
 .kpi--alerta strong { color: #b42318; }
 .kpi--aviso strong { color: var(--acento-tinta); }
-.caja { background: var(--blanco); border: 1px solid var(--linea); border-radius: 20px; padding: clamp(16px, 2.4vw, 24px); display: grid; gap: 16px; min-width: 0; }
+.caja { background: var(--blanco); border: 1px solid var(--linea); border-radius: 20px; padding: clamp(16px, 2.4vw, 24px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
 .caja-cab { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
 .caja-cab h2 { font: 700 1.15rem/1.2 var(--f-texto); }
 .rejilla-panel { display: grid; gap: 18px; }
 @media (min-width: 1200px) { .rejilla-panel { grid-template-columns: 1.3fr 1fr; align-items: start; } }
 .feed { display: grid; gap: 4px; }
-.feed li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--linea); }
+.feed li { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--linea); }
+.feed li > a, .feed li > span { min-width: 0; }
 .feed li:last-child { border-bottom: 0; }
 .feed .ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--nacar); flex: none; }
 .feed .ico .i { width: 17px; height: 17px; }
@@ -38,7 +42,7 @@
 .tabla-panel th, .tabla-panel td { padding: 10px 10px; border-bottom: 1px solid var(--linea); text-align: left; vertical-align: middle; }
 .tabla-panel thead th { font: 600 0.7rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--gris); }
 .tabla-panel tbody tr:hover { background: #faf9fd; }
-.envoltura-tabla { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+.envoltura-tabla { position: relative; overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
 .prod-celda { display: flex; gap: 10px; align-items: center; min-width: 220px; }
 .prod-celda img { width: 40px; height: 50px; object-fit: contain; border-radius: 8px; background: var(--nacar); flex: none; }
 .prod-celda small { display: block; color: var(--gris); font-size: 0.78rem; }
@@ -67,7 +71,7 @@
 .barra-mini span { display: block; height: 100%; background: var(--ok); }
 .barra-mini.casi span { background: var(--aviso); }
 .barra-mini.llena span { background: var(--lleno); }
-.gestion-cab { display: grid; gap: 12px; padding: clamp(18px, 3vw, 28px); border-radius: 22px; background: var(--noche); color: var(--nacar); }
+.gestion-cab { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: clamp(18px, 3vw, 28px); border-radius: 22px; background: var(--noche); color: var(--nacar); }
 .gestion-cab .fila .btn--suave { --bg: rgba(255, 255, 255, 0.1); --fg: var(--nacar); }
 .fase { display: flex; flex-wrap: wrap; gap: 6px; }
 .fase span { padding: 6px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; background: rgba(255, 255, 255, 0.08); color: var(--niebla); }

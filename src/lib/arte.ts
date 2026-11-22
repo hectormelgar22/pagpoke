@@ -12,12 +12,12 @@ function defs(id: string, c1: string, c2: string): string {
 <linearGradient id="${id}h" x1="0" y1="0" x2="1" y2=".6">${HOLO.map((c, i) => `<stop offset="${i / (HOLO.length - 1)}" stop-color="${c}"/>`).join('')}</linearGradient>
 <linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <radialGradient id="${id}r" cx=".5" cy=".42" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".45" stop-color="${c1}" stop-opacity=".35"/><stop offset="1" stop-color="${c2}" stop-opacity="0"/></radialGradient>
-<filter id="${id}s" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+<radialGradient id="${id}s"><stop offset="0" stop-color="#0B0A14" stop-opacity=".45"/><stop offset="1" stop-color="#0B0A14" stop-opacity="0"/></radialGradient>
 </defs>`;
 }
 
 const sombra = (id: string, cx = 200, cy = 452, rx = 120) =>
-  `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="14" fill="#0B0A14" opacity=".35" filter="url(#${id}s)"/>`;
+  `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="18" fill="url(#${id}s)"/>`;
 const estrella = (x: number, y: number, s: number, fill = '#fff', op = 1) =>
   `<path d="${ESTRELLA}" transform="translate(${x} ${y}) scale(${s})" fill="${fill}" opacity="${op}"/>`;
 const texto = (x: number, y: number, t: string, tam: number, color = '#fff', anchor = 'middle', peso = 700) =>

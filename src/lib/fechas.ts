@@ -33,15 +33,18 @@ export function partes(fecha: Date | string): Partes {
 }
 
 /** Fecha en hora de la tienda -> Date (UTC). Dos pasadas para acertar con el cambio de hora. */
+const desfases = new Map<string, number>();
 export function desdeZona(y: number, m: number, d: number, h = 0, min = 0): Date {
-  const objetivo = Date.UTC(y, m - 1, d, h, min);
-  let t = objetivo;
-  for (let i = 0; i < 2; i++) {
-    const p = partes(new Date(t));
-    const visto = Date.UTC(p.y, p.m - 1, p.d, p.h, p.min);
-    t += objetivo - visto;
+  // Desfase horario de ese día (se calcula una vez por día: formatear fechas es caro en móviles)
+  const k = `${y}-${m}-${d}`;
+  let desfase = desfases.get(k);
+  if (desfase === undefined) {
+    const mediodia = Date.UTC(y, m - 1, d, 12);
+    const p = partes(new Date(mediodia));
+    desfase = Date.UTC(p.y, p.m - 1, p.d, p.h, p.min) - mediodia;
+    desfases.set(k, desfase);
   }
-  return new Date(t);
+  return new Date(Date.UTC(y, m - 1, d, h, min) - desfase);
 }
 
 /** Clave de día "AAAA-MM-DD" en hora de la tienda. */
@@ -68,11 +71,16 @@ export function dowDeClave(clave: string): number {
  *  - "S+1/7 09:30": domingo de la semana que viene
  *  - "AHORA-180": hace 180 minutos (redondeado a la hora)
  */
+const lunesDe = new Map<number, string>();
 export function resolverFecha(valor: string, ahora: Date): string {
   const s = /^S([+-]\d+)\/([1-7]) (\d{2}):(\d{2})$/.exec(valor);
   if (s) {
-    const hoy = claveDia(ahora);
-    const lunes = sumarDias(hoy, 1 - dowDeClave(hoy));
+    let lunes = lunesDe.get(ahora.getTime());
+    if (!lunes) {
+      const hoy = claveDia(ahora);
+      lunes = sumarDias(hoy, 1 - dowDeClave(hoy));
+      lunesDe.set(ahora.getTime(), lunes);
+    }
     const dia = sumarDias(lunes, +s[1] * 7 + (+s[2] - 1));
     const [y, m, d] = dia.split('-').map(Number);
     return desdeZona(y, m, d, +s[3], +s[4]).toISOString();

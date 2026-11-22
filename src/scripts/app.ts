@@ -1,7 +1,8 @@
 /* Comportamiento común a todas las páginas: menús, diálogos, favoritos, reservas,
    avisos de stock, búsqueda rápida y animaciones de entrada. */
 import { $, $$, abrir, contactoValido, mostrarErrores, normalizar, toast } from './ui.ts';
-import { cargar, mutar, mutarLigero, nuevoId, suscribir } from '../lib/almacen.ts';
+import { productosEstado, favoritos, alertas, alCambiar, almacen, guardar, guardado } from '../lib/estado-ligero.ts';
+import type { Torneo } from '../lib/tipos.ts';
 import { PRODUCTOS, productoPorId } from '../data/catalogo.ts';
 import { accionProducto, fichaResumen, metaProducto, textoStock, urlProducto } from '../lib/vistas/producto.ts';
 import { euros, esc } from '../lib/html.ts';
@@ -61,8 +62,9 @@ addEventListener('scroll', () => {
 }, { passive: true });
 
 /* ---------- Productos: precio, stock y favoritos según el estado guardado ---------- */
-function pintarProductos() {
-  const e = cargar();
+function pintarProductos(forzar = false) {
+  if (!forzar && !guardado()) return;
+  const e = { productos: productosEstado(), favoritos: favoritos() };
   for (const el of $$('[data-precio]')) {
     const s = e.productos[el.dataset.precio!];
     if (s) el.textContent = euros(s.precio);
@@ -87,7 +89,7 @@ function pintarProductos() {
   }
 }
 pintarProductos();
-suscribir(pintarProductos);
+alCambiar(() => pintarProductos(true));
 export { pintarProductos };
 
 document.addEventListener('click', (ev) => {
@@ -96,12 +98,15 @@ document.addEventListener('click', (ev) => {
   if (fav) {
     ev.preventDefault();
     const id = fav.dataset.favorito!;
-    const ahora = mutarLigero((e) => {
-      const i = e.favoritos.indexOf(id);
-      if (i >= 0) e.favoritos.splice(i, 1);
-      else e.favoritos.push(id);
-      return i < 0;
-    });
+    const ahora = !favoritos().includes(id);
+    for (const b of $$(`[data-favorito="${id}"]`)) b.setAttribute('aria-pressed', String(ahora));
+    guardar((m) =>
+      m.mutarLigero((e) => {
+        const i = e.favoritos.indexOf(id);
+        if (ahora && i < 0) e.favoritos.push(id);
+        if (!ahora && i >= 0) e.favoritos.splice(i, 1);
+      }),
+    );
     fav.classList.remove('late');
     void fav.offsetWidth;
     if (ahora) fav.classList.add('late');
@@ -116,11 +121,11 @@ document.addEventListener('click', (ev) => {
 /* Favoritos (panel lateral) */
 const dlgFav = $<HTMLDialogElement>('#dlg-favoritos');
 dlgFav?.addEventListener('abierto', pintarFavoritos);
-suscribir(() => dlgFav?.open && pintarFavoritos());
+alCambiar(() => dlgFav?.open && pintarFavoritos());
 function pintarFavoritos() {
   const cont = $('#lista-favoritos');
   if (!cont) return;
-  const e = cargar();
+  const e = { productos: productosEstado(), favoritos: favoritos() };
   const items = e.favoritos.map((id) => productoPorId.get(id)).filter((p) => !!p);
   if (!items.length) {
     cont.innerHTML = `<div class="vacio">${icono('corazon')}<p>Aún no has guardado nada. Pulsa el corazón de cualquier producto para tenerlo aquí la próxima vez.</p><a class="btn btn--acento" href="/catalogo/">Ir al catálogo</a></div>`;
@@ -141,7 +146,8 @@ function abrirReserva(id: string) {
   const p = productoPorId.get(id);
   if (!p) return;
   reservando = id;
-  const e = cargar();
+  void almacen(); // se precarga mientras se rellena el formulario
+  const e = { productos: productosEstado() };
   $('#res-producto')!.innerHTML = String(fichaResumen(p, e.productos[id]));
   const cant = $<HTMLInputElement>('#res-cantidad')!;
   cant.max = String(e.productos[id].stock);
@@ -153,7 +159,7 @@ $('#form-reserva')?.addEventListener('submit', (ev) => {
   ev.preventDefault();
   const f = ev.currentTarget as HTMLFormElement;
   const d = Object.fromEntries(new FormData(f)) as Record<string, string>;
-  const e = cargar();
+  const e = { productos: productosEstado() };
   const stock = e.productos[reservando]?.stock ?? 0;
   const cantidad = Math.floor(+d.cantidad);
   const errores = {
@@ -163,9 +169,8 @@ $('#form-reserva')?.addEventListener('submit', (ev) => {
   };
   if (!mostrarErrores(f, errores)) return;
   const p = productoPorId.get(reservando)!;
-  mutar((x) =>
-    x.reservas.unshift({ id: nuevoId('r'), productoId: p.id, cantidad, nombre: d.nombre.trim(), contacto: d.contacto.trim(), recogida: d.recogida, nota: d.nota.trim(), fecha: new Date().toISOString(), estado: 'pendiente' }),
-  );
+  const reserva = { productoId: p.id, cantidad, nombre: d.nombre.trim(), contacto: d.contacto.trim(), recogida: d.recogida, nota: d.nota.trim(), fecha: new Date().toISOString(), estado: 'pendiente' as const };
+  guardar((m) => m.mutar((x) => x.reservas.unshift({ id: m.nuevoId('r'), ...reserva })));
   const msg = `Hola, soy ${d.nombre.trim()}. Me gustaría reservar:\n· ${p.nombre}${p.numero ? ` (${p.numero})` : ''} × ${cantidad} — ${euros(e.productos[p.id].precio)}\nPasaría: ${d.recogida.toLowerCase()}.${d.nota.trim() ? `\nNota: ${d.nota.trim()}` : ''}`;
   window.open(enlaceWhatsApp(msg), '_blank', 'noopener');
   f.reset();
@@ -179,7 +184,8 @@ function abrirAviso(id: string) {
   const p = productoPorId.get(id);
   if (!p) return;
   avisando = id;
-  $('#av-producto')!.innerHTML = String(fichaResumen(p, cargar().productos[id]));
+  void almacen();
+  $('#av-producto')!.innerHTML = String(fichaResumen(p, productosEstado()[id]));
   mostrarErrores($('#form-aviso')!, {});
   abrir('dlg-aviso');
 }
@@ -192,12 +198,13 @@ $('#form-aviso')?.addEventListener('submit', (ev) => {
     contacto: !contactoValido(d.contacto) ? 'Escribe un teléfono o un email válido.' : undefined,
   };
   if (!mostrarErrores(f, errores)) return;
-  const repetido = cargar().alertas.some((a) => a.productoId === avisando && a.contacto.trim().toLowerCase() === d.contacto.trim().toLowerCase() && !a.avisado);
+  const repetido = alertas().some((a) => a.productoId === avisando && a.contacto.trim().toLowerCase() === d.contacto.trim().toLowerCase() && !a.avisado);
   if (repetido) {
     mostrarErrores(f, { contacto: 'Ya nos pediste aviso para este producto con este contacto.' });
     return;
   }
-  mutar((x) => x.alertas.unshift({ id: nuevoId('a'), productoId: avisando, nombre: d.nombre.trim(), contacto: d.contacto.trim(), fecha: new Date().toISOString(), avisado: false }));
+  const alerta = { productoId: avisando, nombre: d.nombre.trim(), contacto: d.contacto.trim(), fecha: new Date().toISOString(), avisado: false };
+  guardar((m) => m.mutar((x) => x.alertas.unshift({ id: m.nuevoId('a'), ...alerta })));
   f.reset();
   f.closest('dialog')?.close();
   toast('Hecho: la tienda te avisará cuando vuelva');
@@ -205,6 +212,7 @@ $('#form-aviso')?.addEventListener('submit', (ev) => {
 
 /* ---------- Búsqueda rápida ---------- */
 const entrada = $<HTMLInputElement>('#buscar-rapido');
+let torneosBusqueda: Torneo[] = [];
 const zona = $('#resultados-rapidos');
 const PAGINAS = [
   ['Torneos', '/torneos/'], ['Clasificación de jugadores', '/torneos/clasificacion/'], ['Historial de torneos', '/torneos/historial/'],
@@ -213,7 +221,7 @@ const PAGINAS = [
 function buscarRapido() {
   if (!zona || !entrada) return;
   const q = normalizar(entrada.value);
-  const e = cargar();
+  const e = { productos: productosEstado(), torneos: torneosBusqueda };
   const ahora = new Date();
   if (!q) {
     const sugeridos = PRODUCTOS.filter((p) => p.etiquetas.includes('mas-buscado')).slice(0, 4);
@@ -244,6 +252,10 @@ entrada?.addEventListener('input', buscarRapido);
 $('#dlg-buscar')?.addEventListener('abierto', () => {
   buscarRapido();
   entrada?.focus();
+  almacen().then((m) => {
+    torneosBusqueda = m.cargar().torneos;
+    buscarRapido();
+  });
 });
 
 /* ---------- Horario: día de hoy y abierto/cerrado en directo ---------- */

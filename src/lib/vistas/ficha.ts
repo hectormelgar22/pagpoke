@@ -113,6 +113,7 @@ export function fichaCuerpo(t: Torneo, js: Jugadores, ahora: Date) {
   return html`${bannerCampeon(t, js)}
 <div class="torneo-cuerpo${hayCompeticion ? ' torneo-cuerpo--ancho' : ''}" style="${t.finalizado ? 'margin-top:24px' : ''}">
   <div style="min-width:0">
+    <h2 class="solo-lector">Detalles del torneo</h2>
     ${pestanas(t)}
     <div role="tabpanel" id="panel-info" aria-labelledby="tab-info" ${hayCompeticion ? raw('hidden') : ''}>${pestanaInfo(t)}</div>
     <div role="tabpanel" id="panel-participantes" aria-labelledby="tab-participantes" hidden>

@@ -109,8 +109,9 @@ ul[role='list'], ol[role='list'] { list-style: none; margin: 0; padding: 0; }
 .clara { background: var(--nacar); }
 .blanca { background: var(--blanco); }
 .cab-seccion { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px 40px; margin-bottom: clamp(2rem, 4vw, 3rem); }
-.cab-seccion > div { display: grid; gap: 14px; max-width: 760px; }
-.pila { display: grid; gap: var(--pila, 16px); }
+.cab-seccion > * { min-width: 0; }
+.cab-seccion > div { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 760px; }
+.pila { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--pila, 16px); }
 .fila { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fila, 12px); }
 .i { width: 20px; height: 20px; flex: none; }
 
@@ -205,12 +206,12 @@ select.entrada {
   cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform 0.2s var(--ease);
 }
 .chip:hover { border-color: var(--tinta); }
-.chip[aria-pressed='true'], .chip:has(input:checked) { background: var(--noche); border-color: var(--noche); color: var(--nacar); }
+.chip[aria-pressed='true'], .chip[aria-selected='true'], .chip:has(input:checked) { background: var(--noche); border-color: var(--noche); color: var(--nacar); }
 .chip input { position: absolute; opacity: 0; pointer-events: none; }
 .chip:has(input:focus-visible) { outline: 2px solid var(--acento); outline-offset: 2px; }
 .osc .chip { background: transparent; border-color: var(--linea-osc); color: var(--nacar); }
 .osc .chip:hover { border-color: var(--nacar); }
-.osc .chip[aria-pressed='true'], .osc .chip:has(input:checked) { background: var(--nacar); color: var(--noche); border-color: var(--nacar); }
+.osc .chip[aria-pressed='true'], .osc .chip[aria-selected='true'], .osc .chip:has(input:checked) { background: var(--nacar); color: var(--noche); border-color: var(--nacar); }
 .chip .num { font: 600 0.75rem var(--f-mono); opacity: 0.6; }
 
 /* ---------- Diálogos ---------- */
@@ -227,7 +228,7 @@ dialog::backdrop { background: rgba(11, 10, 20, 0.62); backdrop-filter: blur(6px
 }
 dialog:not([open]) { opacity: 0; transform: translateY(16px); }
 .dlg-cab { position: sticky; top: 0; z-index: 2; display: flex; align-items: start; justify-content: space-between; gap: 16px; padding: 22px 22px 14px; background: inherit; }
-.dlg-cuerpo { padding: 4px 22px 24px; display: grid; gap: 18px; }
+.dlg-cuerpo { padding: 4px 22px 24px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
 .dlg-cerrar { margin: -6px -8px 0 0; }
 @media (max-width: 640px) {
   dialog.hoja { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 22px 22px 0 0; max-height: 92svh; }
@@ -237,7 +238,7 @@ dialog.lateral { margin: 0 0 0 auto; height: 100svh; max-height: 100svh; width: 
 @starting-style { dialog.lateral[open] { transform: translateX(100%); } }
 
 /* ---------- Avisos (toast) ---------- */
-.avisos { position: fixed; z-index: 90; left: 50%; bottom: 20px; transform: translateX(-50%); display: grid; gap: 8px; width: min(100% - 24px, 440px); pointer-events: none; }
+.avisos { position: fixed; z-index: 90; left: 12px; right: 12px; bottom: 20px; margin-inline: auto; max-width: 440px; display: grid; gap: 8px; pointer-events: none; }
 .aviso-toast {
   display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px;
   background: var(--noche); color: var(--nacar); box-shadow: var(--sombra); font-size: 0.94rem; pointer-events: auto;
@@ -323,7 +324,7 @@ dialog.lateral { margin: 0 0 0 auto; height: 100svh; max-height: 100svh; width: 
 .redes a { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--linea-osc); }
 .redes a:hover { border-color: var(--nacar); }
 .pie-gigante {
-  margin-top: clamp(3rem, 6vw, 5rem); font: 800 clamp(4rem, 21vw, 19rem)/0.78 var(--f-display); font-stretch: 125%;
+  margin-top: clamp(3rem, 6vw, 5rem); font: 800 clamp(3rem, 16.5vw, 19rem)/0.78 var(--f-display); font-stretch: 125%;
   letter-spacing: -0.06em; text-align: center; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
   user-select: none; white-space: nowrap; overflow: hidden;
 }

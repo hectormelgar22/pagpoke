@@ -664,7 +664,18 @@ $('[data-restablecer]')!.addEventListener('click', () => {
   pintar();
 });
 
+// Si hay un diálogo abierto, se repinta al cerrarlo (para no perder lo que se está escribiendo)
+let pendiente = false;
+const dialogos = [dlgForm, $<HTMLDialogElement>('#dlg-resultado')!];
 suscribir(() => {
-  if (!dlgForm.open && !($('#dlg-resultado') as HTMLDialogElement).open) pintar();
+  if (dialogos.some((d) => d.open)) pendiente = true;
+  else pintar();
 });
+for (const d of dialogos)
+  d.addEventListener('close', () => {
+    if (pendiente) {
+      pendiente = false;
+      pintar();
+    }
+  });
 irA();

@@ -8,7 +8,7 @@ const site = process.env.SITE_URL || 'https://destello-demo.netlify.app';
 export default defineConfig({
   site,
   trailingSlash: 'always',
-  build: { format: 'directory', inlineStylesheets: 'auto' },
+  build: { format: 'directory', inlineStylesheets: 'always' },
   prefetch: { defaultStrategy: 'hover' },
   integrations: [sitemap({ filter: (page) => !page.includes('/panel') && !page.includes('/torneos/evento') })],
 });

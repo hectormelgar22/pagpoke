@@ -101,6 +101,7 @@ const ld = {
         </div>
         <div class="activos" data-activos aria-live="polite"></div>
         <p class="solo-lector" aria-live="polite" data-anuncio></p>
+        <h2 class="solo-lector">Productos</h2>
         <div class="rejilla-productos" id="rejilla">
           <Fragment set:html={lista.map((p, i) => String(tarjetaProducto(p, e.productos[p.id], { cargaPrioritaria: i < 4 }))).join('')} />
         </div>

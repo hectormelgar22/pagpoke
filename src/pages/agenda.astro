@@ -5,6 +5,13 @@ import '../styles/torneos.css';
 import { TIPOS_EVENTO } from '../data/eventos.ts';
 import { tienda } from '../data/tienda.ts';
 import { icono } from '../lib/iconos.ts';
+import { estadoInicial } from '../lib/almacen.ts';
+import { pintarAgenda } from '../lib/vistas/agenda.ts';
+import { partes } from '../lib/fechas.ts';
+import type { TipoEvento } from '../lib/tipos.ts';
+const ahora = new Date();
+const hoy = partes(ahora);
+const v = pintarAgenda(estadoInicial(ahora), hoy.y, hoy.m, new Set(Object.keys(TIPOS_EVENTO) as TipoEvento[]), ahora);
 ---
 <Base titulo="Agenda de eventos y torneos" descripcion={`Calendario de ${tienda.nombre}: torneos, liga semanal, presentaciones de nuevas colecciones, eventos especiales y tardes de juego libre en ${tienda.direccion.ciudad}.`} pagina="agenda">
   <CabeceraTorneos actual="agenda" etiqueta="Agenda de la tienda" titulo="Lo que pasa en la tienda, día a día." texto="Torneos, liga, presentaciones y tardes de juego libre. Toca un evento para ver los detalles o añadirlo a tu calendario." />
@@ -13,7 +20,7 @@ import { icono } from '../lib/iconos.ts';
       <div class="agenda-cab">
         <div class="fila" style="--fila:8px">
           <button class="btn-icono" type="button" data-mes="-1" aria-label="Mes anterior" set:html={icono('atras')} style="border:1px solid var(--linea)" />
-          <h2 class="agenda-mes" data-mes-titulo aria-live="polite">Agenda</h2>
+          <h2 class="agenda-mes" data-mes-titulo aria-live="polite">{v.titulo}</h2>
           <button class="btn-icono" type="button" data-mes="1" aria-label="Mes siguiente" set:html={icono('flecha')} style="border:1px solid var(--linea)" />
           <button class="btn btn--suave btn--peq" type="button" data-hoy>Hoy</button>
         </div>
@@ -21,8 +28,8 @@ import { icono } from '../lib/iconos.ts';
           {Object.entries(TIPOS_EVENTO).map(([k, v]) => <button class="chip" type="button" data-tipo={k} aria-pressed="true" style={`--c:${v.color}`}>{v.nombre}</button>)}
         </div>
       </div>
-      <div class="calendario-envoltura"><div class="calendario" data-calendario role="grid" aria-label="Calendario del mes"></div></div>
-      <div class="agenda-lista agenda-lista--movil" data-lista></div>
+      <div class="calendario-envoltura"><div class="calendario" data-calendario set:html={v.calendario} /></div>
+      <div class="agenda-lista agenda-lista--movil" data-lista set:html={v.lista} />
       <p class="nota-demo" style="margin-top:20px"><Fragment set:html={icono('info')} /><span>Los eventos semanales se repiten siempre el mismo día. Los torneos con inscripción enlazan a su ficha.</span></p>
     </div>
   </section>

@@ -14,6 +14,14 @@ const nickDe = (js: Jugadores) => (id: string) => js[id]?.nick ?? '—';
 
 /** Torneos de la semilla tienen página propia; los creados en el panel usan la página genérica. */
 export const rutaTorneo = (t: Torneo) => (t.creadoEnPanel ? `/torneos/evento/?id=${encodeURIComponent(t.id)}` : `/torneos/${t.slug}/`);
+/** "League Challenge · dom 29 nov · 4 plazas" (para la franja de datos de la portada). */
+export function textoProximo(t: Torneo, ahora: Date): string {
+  const est = T.estadoTorneo(t, ahora);
+  const p = T.plazas(t);
+  return `${t.nombre} · ${fechaCorta(t.inicio)} · ${T.admiteInscripcion(est) ? `${p.libres} ${p.libres === 1 ? 'plaza' : 'plazas'}` : T.ETIQUETA_ESTADO[est]}`;
+}
+export const proximoConPlazas = (lista: Torneo[], ahora: Date) => lista.find((x) => T.admiteInscripcion(T.estadoTorneo(x, ahora))) ?? lista[0];
+
 export const numTorneo = (t: Torneo) => `Nº ${String(t.numero).padStart(3, '0')}`;
 
 export function pillEstado(e: EstadoTorneo, extra = '') {
@@ -133,7 +141,7 @@ export function cuadroHTML(t: Torneo, rondas: Partida[][], js: Jugadores, op: Op
   <div class="cuadro-pista" tabindex="0" aria-label="Cuadro de ${t.nombre}">
     ${rondas.map(
       (ronda, r) => html`<section class="cuadro-ronda" data-ronda="${r}" aria-label="${nombreRonda(total, r)}">
-      <h4 class="cuadro-titulo">${nombreRonda(total, r)}<span>${ronda.filter((p) => p.estado === 'finalizada' && !p.bye).length}/${ronda.filter((p) => !p.bye).length}</span></h4>
+      <h3 class="cuadro-titulo">${nombreRonda(total, r)}<span>${ronda.filter((p) => p.estado === 'finalizada' && !p.bye).length}/${ronda.filter((p) => !p.bye).length}</span></h3>
       <ol class="cuadro-partidas" role="list">
         ${ronda.map(
           (p) => html`<li class="cruce cruce--${p.bye ? 'bye' : p.estado}" data-partida="${p.id}" data-jugadores="${[p.a, p.b].filter(Boolean).join(' ')}">
@@ -148,7 +156,7 @@ export function cuadroHTML(t: Torneo, rondas: Partida[][], js: Jugadores, op: Op
     </section>`,
     )}
     <section class="cuadro-ronda cuadro-final" data-ronda="${total}" aria-label="Campeón">
-      <h4 class="cuadro-titulo">Campeón</h4>
+      <h3 class="cuadro-titulo">Campeón</h3>
       <div class="campeon-caja${campeonId ? ' campeon-caja--si' : ''}">
         ${raw(icono('trofeo', 'campeon-trofeo'))}
         ${campeonId ? html`<p class="campeon-nick">${js[campeonId]?.nick}</p><p class="campeon-nombre">${js[campeonId]?.nombre}</p>` : html`<p class="campeon-nombre">Por decidir</p>`}
@@ -214,7 +222,7 @@ export function participantesHTML(t: Torneo, js: Jugadores) {
   ${Array.from({ length: libres }, (_, k) => html`<li class="participante participante--libre"><span class="part-num cifra">${String(t.inscripciones.length + k + 1).padStart(2, '0')}</span><span class="part-texto"><strong>Plaza libre</strong></span></li>`)}
   ${p.libres > libres ? html`<li class="participante participante--libre participante--resto"><span class="part-texto"><strong>+${p.libres - libres} plazas libres</strong></span></li>` : ''}
 </ol>
-${t.listaEspera.length ? html`<h4 class="h3" style="margin-top:28px">Lista de espera</h4><ol class="participantes participantes--espera" role="list">${t.listaEspera.map((i, n) => html`<li class="participante"><span class="part-num cifra">E${n + 1}</span><span class="part-texto"><strong>${js[i.jugadorId]?.nick}</strong><small>${js[i.jugadorId]?.nombre}</small></span></li>`)}</ol>` : ''}`;
+${t.listaEspera.length ? html`<h3 class="h3" style="margin-top:28px">Lista de espera</h3><ol class="participantes participantes--espera" role="list">${t.listaEspera.map((i, n) => html`<li class="participante"><span class="part-num cifra">E${n + 1}</span><span class="part-texto"><strong>${js[i.jugadorId]?.nick}</strong><small>${js[i.jugadorId]?.nombre}</small></span></li>`)}</ol>` : ''}`;
 }
 
 export function hash(s: string): number {
@@ -256,8 +264,8 @@ export function filasRanking(filas: FilaRanking[], js: Jugadores, desde = 0, has
   });
 }
 
-export function tablaRanking(filas: FilaRanking[], js: Jugadores, limite?: number) {
-  return html`<div class="tabla-envoltura"><table class="tabla tabla-ranking">
+export function tablaRanking(filas: FilaRanking[], js: Jugadores, limite?: number, compacta = false) {
+  return html`<div class="tabla-envoltura"><table class="tabla tabla-ranking${compacta ? ' tabla-ranking--compacta' : ''}">
   <caption class="solo-lector">Clasificación de jugadores</caption>
   <thead><tr><th scope="col">Pos.</th><th scope="col">Jugador</th><th scope="col" class="num">Puntos</th><th scope="col" class="num col-opc">Torneos</th><th scope="col" class="num col-opc">Victorias</th><th scope="col" class="num">% vict.</th><th scope="col" class="col-opc">Últimos resultados</th></tr></thead>
   <tbody>${filasRanking(filas, js, 0, limite ?? filas.length)}</tbody></table></div>`;

@@ -1,8 +1,9 @@
 import { $, abrir, descargarIcs } from './ui.ts';
 import { cargar, suscribir } from '../lib/almacen.ts';
-import { eventosEntre, type EventoAgenda } from '../lib/agenda.ts';
+import type { EventoAgenda } from '../lib/agenda.ts';
+import { pintarAgenda } from '../lib/vistas/agenda.ts';
 import { TIPOS_EVENTO } from '../data/eventos.ts';
-import { claveDia, desdeZona, dowDeClave, fechaLarga, hora, nombreMes, partes, sumarDias } from '../lib/fechas.ts';
+import { fechaLarga, hora, partes } from '../lib/fechas.ts';
 import { esc } from '../lib/html.ts';
 import { icono } from '../lib/iconos.ts';
 import { enlaceWhatsApp, tienda } from '../data/tienda.ts';
@@ -13,37 +14,13 @@ let y = hoy.y;
 let m = hoy.m;
 const activos = new Set<TipoEvento>(Object.keys(TIPOS_EVENTO) as TipoEvento[]);
 let visibles: EventoAgenda[] = [];
-const DSEM = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
 function pintar() {
-  const primero = `${y}-${String(m).padStart(2, '0')}-01`;
-  const ultimo = sumarDias(`${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2, '0')}-01`, -1);
-  const inicioRejilla = sumarDias(primero, 1 - dowDeClave(primero));
-  const finRejilla = sumarDias(ultimo, 7 - dowDeClave(ultimo));
-  visibles = eventosEntre(cargar(), inicioRejilla, finRejilla).filter((ev) => activos.has(ev.tipo));
-  const porDia = new Map<string, EventoAgenda[]>();
-  for (const ev of visibles) {
-    const k = claveDia(ev.inicio);
-    porDia.set(k, [...(porDia.get(k) ?? []), ev]);
-  }
-  $('[data-mes-titulo]')!.textContent = nombreMes(y, m);
-  const hoyK = claveDia(new Date());
-  let celdas = DSEM.map((d) => `<div class="cal-dsem" role="columnheader">${d}</div>`).join('');
-  for (let k = inicioRejilla; k <= finRejilla; k = sumarDias(k, 1)) {
-    const evs = porDia.get(k) ?? [];
-    const fuera = k < primero || k > ultimo;
-    celdas += `<div class="cal-dia${fuera ? ' cal-dia--fuera' : ''}${k === hoyK ? ' cal-dia--hoy' : ''}" role="gridcell" aria-label="${fechaLarga(desdeZona(+k.slice(0, 4), +k.slice(5, 7), +k.slice(8, 10), 12).toISOString())}${evs.length ? `, ${evs.length} eventos` : ''}">
-      <span class="cal-num">${+k.slice(8, 10)}</span>
-      ${evs.slice(0, 3).map((ev) => `<button type="button" class="cal-ev" style="--c:${TIPOS_EVENTO[ev.tipo].color}" data-ev="${esc(ev.id)}">${hora(ev.inicio)} ${esc(ev.nombre)}</button>`).join('')}
-      ${evs.length > 3 ? `<button type="button" class="cal-ev" style="--c:#9ca3af" data-ev="${esc(evs[3].id)}">+${evs.length - 3} más</button>` : ''}
-    </div>`;
-  }
-  $('[data-calendario]')!.innerHTML = celdas;
-  // Lista para móvil: solo días del mes con eventos
-  const dias = [...porDia.entries()].filter(([k]) => k >= primero && k <= ultimo);
-  $('[data-lista]')!.innerHTML = dias.length
-    ? dias.map(([k, evs]) => `<div><h3>${k === hoyK ? 'Hoy · ' : ''}${fechaLarga(evs[0].inicio)}</h3>${evs.map((ev) => `<button type="button" class="ev-fila" style="--c:${TIPOS_EVENTO[ev.tipo].color}" data-ev="${esc(ev.id)}"><span class="ev-color"></span><span class="ev-hora">${hora(ev.inicio)}</span><span><strong>${esc(ev.nombre)}</strong><small>${TIPOS_EVENTO[ev.tipo].nombre}</small></span></button>`).join('')}</div>`).join('')
-    : `<div class="vacio">${icono('calendario')}<p>No hay eventos de este tipo en ${nombreMes(y, m)}.</p></div>`;
+  const v = pintarAgenda(cargar(), y, m, activos);
+  visibles = v.visibles;
+  $('[data-mes-titulo]')!.textContent = v.titulo;
+  $('[data-calendario]')!.innerHTML = v.calendario;
+  $('[data-lista]')!.innerHTML = v.lista;
 }
 
 document.addEventListener('click', (ev) => {

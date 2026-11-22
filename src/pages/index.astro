@@ -10,11 +10,12 @@ import { PRODUCTOS, CATEGORIAS, productoPorId, EXPANSIONES } from '../data/catal
 import { FOTOS } from '../data/fotos.ts';
 import { estadoInicial } from '../lib/almacen.ts';
 import { tarjetaProducto, urlProducto, rarezaHTML } from '../lib/vistas/producto.ts';
-import { tarjetaTorneo, destacado as destacadoHTML, podio } from '../lib/vistas/torneo.ts';
+import { tarjetaTorneo, destacado as destacadoHTML, podio, textoProximo, proximoConPlazas, rutaTorneo } from '../lib/vistas/torneo.ts';
 import { calcularRanking, temporadaDe } from '../lib/ranking.ts';
 import { horarioSchema } from '../lib/horario.ts';
 import { icono } from '../lib/iconos.ts';
 import { euros } from '../lib/html.ts';
+import { recomendar, RESPUESTAS_INICIALES } from '../lib/asistente.ts';
 
 const ahora = new Date();
 const e = estadoInicial(ahora);
@@ -90,7 +91,7 @@ const ld = {
     <div class="contenedor hero-datos">
       <a class="dato-vivo" href="/contacto/#horario"><span class="punto-vivo" data-punto-tienda></span><span><small>Tienda física · {tienda.direccion.ciudad}</small><strong data-estado-tienda>Consulta el horario</strong></span></a>
       {proximos[0] && (
-        <a class="dato-vivo" href={`/torneos/${proximos[0].slug}/`} data-proximo-torneo><Fragment set:html={icono('trofeo')} /><span><small>Próximo torneo</small><strong data-texto>{proximos[0].nombre}</strong></span></a>
+        <a class="dato-vivo" href={rutaTorneo(proximoConPlazas(proximos, ahora))} data-proximo-torneo><Fragment set:html={icono('trofeo')} /><span><small>Próximo torneo con plazas</small><strong data-texto>{textoProximo(proximoConPlazas(proximos, ahora), ahora)}</strong></span></a>
       )}
       <a class="dato-vivo" href="/catalogo/?orden=novedad"><Fragment set:html={icono('destello')} /><span><small>Recién llegado</small><strong>{listas.novedades.length} novedades este mes</strong></span></a>
     </div>
@@ -154,9 +155,9 @@ const ld = {
         <div class="carrusel" data-carrusel>
           <div class="carrusel-cab">
             <div class="chips" role="tablist" aria-label="Selección de productos">
-              <button class="chip" role="tab" aria-selected="true" aria-pressed="true" data-lista="novedades">Novedades</button>
-              <button class="chip" role="tab" aria-selected="false" aria-pressed="false" data-lista="buscados">Más buscados</button>
-              <button class="chip" role="tab" aria-selected="false" aria-pressed="false" data-lista="seleccion">Selección de la tienda</button>
+              <button class="chip" role="tab" aria-selected="true" data-lista="novedades">Novedades</button>
+              <button class="chip" role="tab" aria-selected="false" data-lista="buscados">Más buscados</button>
+              <button class="chip" role="tab" aria-selected="false" data-lista="seleccion">Selección de la tienda</button>
             </div>
             <div class="carrusel-flechas">
               <button class="btn-icono" type="button" data-mover="-1" aria-label="Anteriores" set:html={icono('atras')} />
@@ -174,7 +175,7 @@ const ld = {
   </section>
 
   <!-- TORNEOS -->
-  <section class="seccion osc-2" aria-labelledby="t-tor" style="overflow:hidden">
+  <section class="seccion osc osc-2" aria-labelledby="t-tor" style="overflow:hidden">
     <div class="contenedor">
       <div class="cab-seccion">
         <div>
@@ -244,7 +245,7 @@ const ld = {
             </div>
           </fieldset>
         </div>
-        <div class="asistente-resultado" aria-live="polite" data-asistente-resultado></div>
+        <div class="asistente-resultado" aria-live="polite" data-asistente-resultado set:html={recomendar(RESPUESTAS_INICIALES, e.productos)} />
       </form>
     </div>
   </section>

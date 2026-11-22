@@ -54,7 +54,7 @@ export function pintarPortadaTorneos(e: EstadoDemo, ahora: Date, f: FiltroTorneo
     proximos: lista.length
       ? lista.map((t) => String(tarjetaTorneo(t, ahora))).join('')
       : String(html`<div class="vacio" style="grid-column:1/-1">${raw(icono('calendario'))}<p>No hay torneos con esos filtros. Prueba con otras fechas o mira la agenda completa.</p><a class="btn btn--fantasma" href="/agenda/">Ver agenda</a></div>`),
-    ranking: rk.length ? String(tablaRanking(rk, e.jugadores, 8)) : '<p class="vacio">Aún no hay torneos finalizados esta temporada.</p>',
+    ranking: rk.length ? String(tablaRanking(rk, e.jugadores, 8, true)) : '<p class="vacio">Aún no hay torneos finalizados esta temporada.</p>',
     historial: pasados.slice(0, 3).map((t) => String(tarjetaHistorial(t, e.jugadores))).join(''),
     total: lista.length,
   };

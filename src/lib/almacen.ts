@@ -8,9 +8,7 @@ import { PRODUCTOS } from '../data/catalogo.ts';
 import { tienda } from '../data/tienda.ts';
 import { claveDia, desdeZona, partes, resolverFecha, sumarDias } from './fechas.ts';
 
-const VERSION = 3;
-const CLAVE = tienda.demo.claveAlmacen;
-const EVENTO = 'destello:estado';
+import { VERSION, CLAVE, EVENTO } from './clave.ts';
 
 function mapearFechasTorneo(t: Torneo, f: (iso: string) => string): Torneo {
   return {
@@ -20,18 +18,22 @@ function mapearFechasTorneo(t: Torneo, f: (iso: string) => string): Torneo {
     cierreInscripciones: t.cierreInscripciones && f(t.cierreInscripciones),
     inscripciones: t.inscripciones.map((i) => ({ ...i, fecha: f(i.fecha) })),
     listaEspera: t.listaEspera.map((i) => ({ ...i, fecha: f(i.fecha) })),
+    suizo: t.suizo.map((r) => r.map((p) => ({ ...p }))),
+    cuadro: t.cuadro && t.cuadro.map((r) => r.map((p) => ({ ...p }))),
+    premios: [...t.premios],
   };
 }
 
 /** Estado de partida con las fechas de ejemplo colocadas alrededor de `ahora`. */
 export function estadoInicial(ahora = new Date()): EstadoDemo {
-  const datos = structuredClone(semilla) as unknown as { jugadores: EstadoDemo['jugadores']; torneos: Torneo[] };
+  // Copia de lo que se puede modificar; el resto (textos) se comparte con los datos de ejemplo sin tocarlos
+  const datos = semilla as unknown as { jugadores: EstadoDemo['jugadores']; torneos: Torneo[] };
   const f = (v: string) => resolverFecha(v, ahora);
   return {
     version: VERSION,
     ancla: ahora.toISOString(),
     modificado: false,
-    jugadores: datos.jugadores,
+    jugadores: { ...datos.jugadores },
     torneos: datos.torneos.map((t) => mapearFechasTorneo(t, f)),
     eventos: EVENTOS_PUNTUALES.map((e) => ({ ...e, inicio: f(e.inicio) })),
     productos: Object.fromEntries(PRODUCTOS.map((p) => [p.id, { precio: p.precio, stock: p.stock }])),

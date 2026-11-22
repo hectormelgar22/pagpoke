@@ -1,5 +1,5 @@
 import { $, $$ } from './ui.ts';
-import { cargar, suscribir } from '../lib/almacen.ts';
+import { productosEstado, alCambiar } from '../lib/estado-ligero.ts';
 import { PRODUCTOS, CATEGORIAS, EXPANSIONES, RAREZAS, IDIOMAS } from '../data/catalogo.ts';
 import { aURL, desdeURL, filtrar, FILTROS_VACIOS, type Filtros } from '../lib/filtros.ts';
 import { tarjetaProducto } from '../lib/vistas/producto.ts';
@@ -73,7 +73,7 @@ function chipsActivos() {
 
 function aplicar(sincronizarFormulario = false) {
   if (sincronizarFormulario) aFormulario();
-  const e = cargar();
+  const e = { productos: productosEstado() };
   const res = filtrar(PRODUCTOS, e.productos, f);
   rejilla.innerHTML = res.map((p, i) => String(tarjetaProducto(p, e.productos[p.id], { cargaPrioritaria: i < 4 })).replace('<article class="producto"', `<article style="--n:${Math.min(i, 12)}" class="producto"`)).join('');
   $('[data-vacio]')!.hidden = res.length > 0;
@@ -144,4 +144,4 @@ document.addEventListener('keydown', (ev) => {
 
 aFormulario();
 if (location.search) aplicar();
-suscribir(() => aplicar());
+alCambiar(() => aplicar());
