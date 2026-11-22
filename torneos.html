@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Torneos y Liga Pokémon en Zaragoza · Mazo &amp; Mesa</title>
+<meta name="description" content="Calendario de torneos de Mazo &amp; Mesa en Zaragoza: Liga Pokémon semanal, League Challenge, League Cup, Commander, One Piece y Lorcana. Inscríbete por WhatsApp.">
+<meta property="og:title" content="Torneos y Liga Pokémon en Zaragoza · Mazo &amp; Mesa">
+<meta property="og:description" content="Calendario de torneos de Mazo &amp; Mesa en Zaragoza: Liga Pokémon semanal, League Challenge, League Cup, Commander, One Piece y Lorcana. Inscríbete por WhatsApp.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta name="theme-color" content="#2B3A8C">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-pagina="torneos">
+<header id="cabecera" class="cabecera"></header>
+<main>
+
+<section class="cabecera-pagina">
+  <div class="envoltura">
+    <h1 class="titulo">Torneos y Liga</h1>
+    <p class="entradilla">Elige el evento, pon tu nombre y nos llega la inscripción por WhatsApp. Las plazas son limitadas.</p>
+  </div>
+</section>
+<section class="seccion">
+  <div class="envoltura diseno-torneos">
+    <div>
+      <div class="filtros" id="filtros-torneos" role="group" aria-label="Filtrar por juego"></div>
+      <div id="calendario" class="calendario"></div>
+    </div>
+    <aside class="caja-lateral">
+      <h2>Cada semana</h2>
+      <ul class="semanales" id="semanales"></ul>
+      <p class="nota">¿Primera vez? Te prestamos un mazo y te explicamos las reglas antes de empezar.</p>
+      <a class="btn btn-wa btn-ancho" data-wa="Hola, tengo una pregunta sobre los torneos." href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>Preguntar por WhatsApp</a>
+    </aside>
+  </div>
+</section>
+
+<dialog id="dlg-inscripcion" aria-labelledby="dlg-titulo">
+  <div class="dlg-cab">
+    <h2 id="dlg-titulo">Inscripción</h2>
+    <p id="dlg-cuando"></p>
+    <button class="dlg-cerrar" id="dlg-cerrar" type="button" aria-label="Cerrar">✕</button>
+  </div>
+  <form id="form-inscripcion">
+    <div class="campo"><label for="i-nombre">Nombre y apellido</label><input id="i-nombre" name="nombre" required autocomplete="name"></div>
+    <div class="campo"><label for="i-id" id="campo-id-label">ID de jugador (opcional)</label><input id="i-id" name="idjugador"></div>
+    <div class="campo" id="campo-categoria"><label for="i-cat">Categoría</label>
+      <select id="i-cat" name="categoria"><option>Máster (adultos)</option><option>Sénior</option><option>Júnior</option></select></div>
+    <button class="btn btn-wa" type="submit">Enviar inscripción por WhatsApp</button>
+    <p class="ayuda">Se abre WhatsApp con tus datos escritos. Te confirmamos la plaza por ahí.</p>
+  </form>
+</dialog>
+</main>
+<footer id="pie" class="pie"></footer>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

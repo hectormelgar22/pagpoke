@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vende tus cartas Pokémon en Zaragoza · Mazo &amp; Mesa</title>
+<meta name="description" content="Compramos colecciones de cartas Pokémon, Magic, One Piece y Lorcana en Zaragoza: cartas sueltas, carpetas, sellado y graduadas. Pago en efectivo, Bizum o crédito en tienda.">
+<meta property="og:title" content="Vende tus cartas Pokémon en Zaragoza · Mazo &amp; Mesa">
+<meta property="og:description" content="Compramos colecciones de cartas Pokémon, Magic, One Piece y Lorcana en Zaragoza: cartas sueltas, carpetas, sellado y graduadas. Pago en efectivo, Bizum o crédito en tienda.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta name="theme-color" content="#2B3A8C">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-pagina="vende">
+<header id="cabecera" class="cabecera"></header>
+<main>
+
+<section class="cabecera-pagina">
+  <div class="envoltura">
+    <h1 class="titulo">Vende tu colección</h1>
+    <p class="entradilla">Compramos cartas sueltas, colecciones completas y producto sellado. Precio claro antes de venir y pago en el momento.</p>
+  </div>
+</section>
+<section class="seccion">
+  <div class="envoltura diseno-venta">
+    <div>
+      <h2 class="titulo titulo-m">Cómo funciona</h2>
+      <ol class="pasos">
+        <li><b>Mándanos fotos</b><p>Rellena el formulario y adjunta unas fotos por WhatsApp. Con la carpeta abierta nos vale.</p></li>
+        <li><b>Te damos un precio</b><p>Lo revisamos y te decimos cuánto pagamos, en efectivo o en crédito de tienda.</p></li>
+        <li><b>Vienes y cobras</b><p>Revisamos las cartas contigo en la tienda y te pagamos en el momento.</p></li>
+      </ol>
+    </div>
+    <form class="formulario" id="form-venta">
+      <h2 class="titulo titulo-form">Cuéntanos qué tienes</h2>
+      <div class="campo"><label for="v-juego">Juego</label><select id="v-juego" name="juego"></select></div>
+      <fieldset class="campo opciones"><legend>Qué quieres vender</legend>
+        <label><input type="radio" name="que" value="Cartas sueltas" checked><span>Cartas sueltas</span></label>
+        <label><input type="radio" name="que" value="Colección o carpeta"><span>Colección o carpeta</span></label>
+        <label><input type="radio" name="que" value="Producto sellado"><span>Producto sellado</span></label>
+        <label><input type="radio" name="que" value="Cartas graduadas"><span>Cartas graduadas</span></label>
+      </fieldset>
+      <div class="campo"><label for="v-cant">Cantidad aproximada</label>
+        <select id="v-cant" name="cantidad"><option>Menos de 50 cartas</option><option>Entre 50 y 500 cartas</option><option>Entre 500 y 2.000 cartas</option><option>Más de 2.000 cartas</option></select></div>
+      <div class="campo"><label for="v-det">Detalles (opcional)</label><textarea id="v-det" name="detalle" placeholder="Por ejemplo: carpeta de la 151 casi completa, con Charizard"></textarea></div>
+      <button class="btn btn-wa" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>Enviar por WhatsApp</button>
+      <p class="ayuda">Se abre WhatsApp con el mensaje escrito. Después adjunta las fotos.</p>
+    </form>
+  </div>
+</section>
+<section class="seccion">
+  <div class="envoltura">
+    <div class="listas-compra">
+      <div class="lista-caja"><h3>Compramos</h3><ul class="lista-si" id="compramos"></ul></div>
+      <div class="lista-caja"><h3>No compramos</h3><ul class="lista-no" id="no-compramos"></ul></div>
+      <div class="lista-caja"><h3>Cómo pagamos</h3><ul class="lista-pago" id="pago"></ul></div>
+    </div>
+  </div>
+</section>
+<section class="seccion">
+  <div class="envoltura preguntas">
+    <h2 class="titulo titulo-m">Preguntas frecuentes</h2>
+    <details><summary>¿Cómo calculáis el precio?</summary><p>Según el estado de cada carta y su precio de mercado actual. Las cartas de valor se miran una a una; el resto, por lotes.</p></details>
+    <details><summary>¿Tengo que ir a la tienda?</summary><p>Para cobrar, sí: revisamos las cartas delante de ti y te pagamos en el momento.</p></details>
+    <details><summary>¿Y si no me convence el precio?</summary><p>No pasa nada. El precio es sin compromiso y te llevas tus cartas.</p></details>
+    <details><summary>¿Compráis a menores de edad?</summary><p>Sí, siempre que vengan con su madre, padre o tutor.</p></details>
+  </div>
+</section>
+</main>
+<footer id="pie" class="pie"></footer>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

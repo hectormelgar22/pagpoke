@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cartas sueltas Pokémon en Zaragoza · Mazo &amp; Mesa</title>
+<meta name="description" content="Cartas sueltas de Pokémon, Magic, One Piece y Lorcana en la vitrina de Mazo &amp; Mesa (Zaragoza). Precio y estado de cada carta. Reserva por WhatsApp.">
+<meta property="og:title" content="Cartas sueltas Pokémon en Zaragoza · Mazo &amp; Mesa">
+<meta property="og:description" content="Cartas sueltas de Pokémon, Magic, One Piece y Lorcana en la vitrina de Mazo &amp; Mesa (Zaragoza). Precio y estado de cada carta. Reserva por WhatsApp.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta name="theme-color" content="#2B3A8C">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-pagina="vitrina">
+<header id="cabecera" class="cabecera"></header>
+<main>
+
+<section class="cabecera-pagina">
+  <div class="envoltura">
+    <h1 class="titulo">Cartas sueltas</h1>
+    <p class="entradilla">Lo que hay ahora en la vitrina. Resérvala por WhatsApp y te la guardamos 48 horas.</p>
+  </div>
+</section>
+<section class="seccion">
+  <div class="envoltura">
+    <div class="herramientas-vitrina">
+      <div class="filtros" id="filtros-vitrina" role="group" aria-label="Filtrar por juego"></div>
+      <label class="buscador"><span class="solo-lector">Buscar carta</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10 2a8 8 0 1 0 4.9 14.3l5.4 5.4 1.4-1.4-5.4-5.4A8 8 0 0 0 10 2Zm0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12Z"/></svg>
+        <input id="buscar" type="search" placeholder="Nombre, expansión o número"></label>
+    </div>
+    <p class="cuenta" id="vitrina-cuenta" aria-live="polite"></p>
+    <ul class="rejilla-cartas" id="vitrina"></ul>
+    <p class="vacio" id="vitrina-vacia" hidden>No hay ninguna carta con esa búsqueda en la vitrina. Escríbenos: puede que la tengamos en carpetas.</p>
+    <p class="nota">¿Buscas una carta que no aparece? <a data-wa="Hola, ¿tenéis esta carta? " href="#" target="_blank" rel="noopener">Pregúntanos por WhatsApp</a>: tenemos más en carpetas. Estado: NM = casi nueva, EX = muy buena, GD = con desgaste visible.</p>
+  </div>
+</section>
+</main>
+<footer id="pie" class="pie"></footer>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

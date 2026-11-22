@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mazo &amp; Mesa · Tienda de cartas Pokémon y TCG en Zaragoza</title>
+<meta name="description" content="Tienda de cartas en Zaragoza: Liga Pokémon, torneos de Magic, One Piece y Lorcana, cartas sueltas y compra de colecciones. Horario, mapa y WhatsApp.">
+<meta property="og:title" content="Mazo &amp; Mesa · Tienda de cartas Pokémon y TCG en Zaragoza">
+<meta property="og:description" content="Tienda de cartas en Zaragoza: Liga Pokémon, torneos de Magic, One Piece y Lorcana, cartas sueltas y compra de colecciones. Horario, mapa y WhatsApp.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta name="theme-color" content="#2B3A8C">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-pagina="inicio">
+<header id="cabecera" class="cabecera"></header>
+<main>
+
+<section class="hero">
+  <div class="envoltura hero-in">
+    <div>
+      <p class="hero-kicker" id="hero-juegos">Pokémon · Magic · One Piece · Lorcana</p>
+      <h1>Tu tienda de cartas <em>en <span data-t="direccion.barrio">Delicias</span></em></h1>
+      <p class="hero-sub" data-t="eslogan">Liga Pokémon cada jueves, cartas sueltas en vitrina y compra de colecciones.</p>
+      <div class="hero-acciones">
+        <a class="btn btn-wa" data-wa href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>Escríbenos por WhatsApp</a>
+        <a class="btn btn-claro" href="torneos.html">Ver torneos</a>
+      </div>
+      <p class="estado" data-estado>Consultando horario…</p>
+      <span class="valoracion" id="valoracion"></span>
+    </div>
+    <div class="holo-escena"><div class="holo" id="holo"></div></div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="envoltura">
+    <div class="cab-seccion">
+      <div><h2 class="titulo">Próximos torneos</h2><p class="entradilla">Apúntate en un minuto: eliges el evento y nos llega tu inscripción por WhatsApp.</p></div>
+      <a class="ver-todo" href="torneos.html">Calendario completo</a>
+    </div>
+    <ol class="eventos" id="proximos"></ol>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="envoltura">
+    <div class="cab-seccion">
+      <div><h2 class="titulo">En la vitrina</h2><p class="entradilla">Algunas cartas sueltas que tenemos ahora. Resérvala por WhatsApp y la recoges en tienda.</p></div>
+      <a class="ver-todo" href="vitrina.html">Ver todas las cartas</a>
+    </div>
+    <ul class="rejilla-cartas" id="destacadas"></ul>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="envoltura">
+    <div class="franja">
+      <div><h2 class="titulo">¿Vendes tu colección?</h2>
+      <p>Compramos cartas sueltas, carpetas enteras y producto sellado. Mándanos fotos y te decimos un precio antes de que vengas.</p></div>
+      <a class="btn btn-pri" href="vende.html">Tasar mi colección</a>
+    </div>
+  </div>
+</section>
+
+<section class="seccion" id="visitanos">
+  <div class="envoltura">
+    <div class="cab-seccion"><div><h2 class="titulo">Ven a vernos</h2></div></div>
+    <div class="visita">
+      <div>
+        <table class="tabla-horario"><caption class="solo-lector">Horario de apertura</caption><tbody id="horario"></tbody></table>
+        <div class="dato-visita"><b data-direccion>Calle de Delicias 48, 50017 Zaragoza</b><p data-t="comoLlegar"></p></div>
+        <a class="btn btn-sec" data-maps href="#" target="_blank" rel="noopener">Cómo llegar en Google Maps</a>
+      </div>
+      <div class="mapa" id="mapa"></div>
+    </div>
+  </div>
+</section>
+
+<dialog id="dlg-inscripcion" aria-labelledby="dlg-titulo">
+  <div class="dlg-cab">
+    <h2 id="dlg-titulo">Inscripción</h2>
+    <p id="dlg-cuando"></p>
+    <button class="dlg-cerrar" id="dlg-cerrar" type="button" aria-label="Cerrar">✕</button>
+  </div>
+  <form id="form-inscripcion">
+    <div class="campo"><label for="i-nombre">Nombre y apellido</label><input id="i-nombre" name="nombre" required autocomplete="name"></div>
+    <div class="campo"><label for="i-id" id="campo-id-label">ID de jugador (opcional)</label><input id="i-id" name="idjugador"></div>
+    <div class="campo" id="campo-categoria"><label for="i-cat">Categoría</label>
+      <select id="i-cat" name="categoria"><option>Máster (adultos)</option><option>Sénior</option><option>Júnior</option></select></div>
+    <button class="btn btn-wa" type="submit">Enviar inscripción por WhatsApp</button>
+    <p class="ayuda">Se abre WhatsApp con tus datos escritos. Te confirmamos la plaza por ahí.</p>
+  </form>
+</dialog>
+</main>
+<footer id="pie" class="pie"></footer>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
