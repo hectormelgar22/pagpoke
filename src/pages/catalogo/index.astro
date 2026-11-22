@@ -1,0 +1,121 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/tienda.css';
+import { PRODUCTOS, CATEGORIAS, EXPANSIONES, RAREZAS, IDIOMAS } from '../../data/catalogo.ts';
+import { estadoInicial } from '../../lib/almacen.ts';
+import { filtrar, FILTROS_VACIOS } from '../../lib/filtros.ts';
+import { tarjetaProducto } from '../../lib/vistas/producto.ts';
+import { icono } from '../../lib/iconos.ts';
+import { tienda, enlaceWhatsApp } from '../../data/tienda.ts';
+
+const e = estadoInicial();
+const lista = filtrar(PRODUCTOS, e.productos, FILTROS_VACIOS);
+const expUsadas = EXPANSIONES.filter((x) => PRODUCTOS.some((p) => p.expansion === x.id));
+const n = (f: (p: (typeof PRODUCTOS)[number]) => boolean) => PRODUCTOS.filter(f).length;
+const USOS = [['coleccion', 'Coleccionar'], ['jugar', 'Jugar'], ['regalo', 'Regalar'], ['empezar', 'Empezar a jugar']];
+const ld = {
+  '@context': 'https://schema.org', '@type': 'CollectionPage', name: `Catálogo de ${tienda.nombre}`,
+  mainEntity: { '@type': 'ItemList', numberOfItems: PRODUCTOS.length, itemListElement: lista.slice(0, 20).map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/catalogo/${p.slug}/`, Astro.site).href, name: p.nombre })) },
+};
+---
+<Base titulo="Catálogo: cartas Pokémon, sobres y accesorios" descripcion={`Cartas sueltas Pokémon con estado revisado, sobres, cajas de entrenador élite, cartas graduadas y accesorios. Consulta precio y stock y reserva por WhatsApp en ${tienda.nombre} (${tienda.direccion.ciudad}).`} pagina="catalogo" migas={[{ nombre: 'Catálogo' }]} jsonld={ld}>
+  <section class="contenedor catalogo-cab">
+    <div class="cab-seccion" style="margin-bottom:0">
+      <div>
+        <p class="etiqueta"><span data-cuenta-total>{PRODUCTOS.length}</span> productos · precio y stock actualizados por la tienda</p>
+        <h1 class="h1">Catálogo</h1>
+        <p class="entradilla">Busca por nombre, expansión o número de carta. Reserva lo que quieras y lo recoges en tienda: sin pagos online.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="contenedor" style="padding-bottom:clamp(4rem,8vw,6rem)">
+    <div class="cats-rapidas" role="group" aria-label="Categorías">
+      <button class="chip" type="button" data-cat-rapida="" aria-pressed="true">Todo</button>
+      {CATEGORIAS.map((c) => <button class="chip" type="button" data-cat-rapida={c.id} aria-pressed="false">{c.plural}<span class="num">{n((p) => p.categoria === c.id)}</span></button>)}
+    </div>
+
+    <div class="catalogo">
+      <div class="filtros-panel" data-filtros-panel>
+        <form class="filtros" id="filtros" aria-label="Filtros del catálogo">
+          <div class="fila filtros-cab-movil" style="justify-content:space-between">
+            <h2 class="h3">Filtros</h2>
+            <button class="btn-icono" type="button" data-cerrar-filtros aria-label="Cerrar filtros" set:html={icono('cerrar')} />
+          </div>
+          <fieldset>
+            <legend>Categoría</legend>
+            {CATEGORIAS.map((c) => <label class="opcion"><input type="checkbox" name="categoria" value={c.id} />{c.plural}<span class="num">{n((p) => p.categoria === c.id)}</span></label>)}
+          </fieldset>
+          <fieldset>
+            <legend>Disponibilidad</legend>
+            <label class="opcion"><input type="checkbox" name="disponible" value="1" />Solo con stock</label>
+          </fieldset>
+          <fieldset>
+            <legend>Precio (€)</legend>
+            <div class="rango">
+              <label class="campo"><span class="solo-lector">Precio mínimo</span><input class="entrada" type="number" name="min" min="0" inputmode="decimal" placeholder="Mín." /></label>
+              <label class="campo"><span class="solo-lector">Precio máximo</span><input class="entrada" type="number" name="max" min="0" inputmode="decimal" placeholder="Máx." /></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Expansión</legend>
+            {expUsadas.map((x) => <label class="opcion"><input type="checkbox" name="expansion" value={x.id} />{x.nombre}<span class="num">{n((p) => p.expansion === x.id)}</span></label>)}
+          </fieldset>
+          <fieldset>
+            <legend>Rareza</legend>
+            {Object.entries(RAREZAS).map(([k, r]) => <label class="opcion"><input type="checkbox" name="rareza" value={k} /><span aria-hidden="true" style="color:var(--acento-tinta)">{r.simbolo}</span>{r.nombre}<span class="num">{n((p) => p.rareza === k)}</span></label>)}
+          </fieldset>
+          <fieldset>
+            <legend>Idioma</legend>
+            {Object.entries(IDIOMAS).map(([k, v]) => <label class="opcion"><input type="checkbox" name="idioma" value={k} />{v}<span class="num">{n((p) => p.idioma === k)}</span></label>)}
+          </fieldset>
+          <fieldset>
+            <legend>Ideal para</legend>
+            {USOS.map(([k, v]) => <label class="opcion"><input type="checkbox" name="uso" value={k} />{v}</label>)}
+          </fieldset>
+          <div class="filtros-pie">
+            <button class="btn btn--suave" type="button" data-limpiar style="flex:1">Limpiar</button>
+            <button class="btn btn--acento" type="button" data-cerrar-filtros style="flex:2">Ver <span data-cuenta-boton>{PRODUCTOS.length}</span> productos</button>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <div class="barra-catalogo">
+          <label class="buscador">
+            <span class="solo-lector">Buscar en el catálogo</span>
+            <Fragment set:html={icono('buscar')} />
+            <input class="entrada" type="search" id="q" placeholder="Charizard, 151, 223/197, fundas…" autocomplete="off" />
+          </label>
+          <div class="fila" style="--fila:8px">
+            <button class="btn btn--suave btn-filtros" type="button" data-abrir-filtros><Fragment set:html={icono('filtro')} />Filtros <span data-num-filtros></span></button>
+            <label class="solo-lector" for="orden">Ordenar</label>
+            <select class="entrada" id="orden" style="width:auto;min-width:190px">
+              <option value="relevancia">Recomendados</option>
+              <option value="novedad">Recién llegados</option>
+              <option value="precio-asc">Precio: de menor a mayor</option>
+              <option value="precio-desc">Precio: de mayor a menor</option>
+              <option value="nombre">Nombre (A–Z)</option>
+            </select>
+          </div>
+        </div>
+        <div class="activos" data-activos aria-live="polite"></div>
+        <p class="solo-lector" aria-live="polite" data-anuncio></p>
+        <div class="rejilla-productos" id="rejilla">
+          <Fragment set:html={lista.map((p, i) => String(tarjetaProducto(p, e.productos[p.id], { cargaPrioritaria: i < 4 }))).join('')} />
+        </div>
+        <div class="vacio" data-vacio hidden>
+          <Fragment set:html={icono('buscar')} />
+          <p><strong>No hay productos con estos filtros.</strong><br />Prueba a quitar alguno o pregúntanos: tenemos más cartas en carpetas.</p>
+          <div class="fila" style="justify-content:center">
+            <button class="btn btn--acento" type="button" data-limpiar>Quitar filtros</button>
+            <a class="btn btn--wa" data-preguntar href={enlaceWhatsApp('Hola, busco una carta que no encuentro en la web.')} target="_blank" rel="noopener"><Fragment set:html={icono('whatsapp')} />Preguntar por WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    import '../../scripts/catalogo.ts';
+  </script>
+</Base>

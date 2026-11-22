@@ -1,0 +1,260 @@
+---
+import '../styles/base.css';
+import '../styles/tienda.css';
+import archivo from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import onest from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+import mono from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
+import Logo from '../components/Logo.astro';
+import { tienda, direccionCompleta, enlaceWhatsApp, DIAS_SEMANA } from '../data/tienda.ts';
+import { CATEGORIAS } from '../data/catalogo.ts';
+import { icono } from '../lib/iconos.ts';
+import { tramosTexto } from '../lib/horario.ts';
+
+interface Miga { nombre: string; url?: string }
+interface Props {
+  titulo: string;
+  descripcion: string;
+  pagina?: string;
+  noindex?: boolean;
+  jsonld?: object | object[];
+  migas?: Miga[];
+  ogTipo?: string;
+  panel?: boolean;
+}
+const { titulo, descripcion, pagina = '', noindex = false, jsonld, migas, ogTipo = 'website', panel = false } = Astro.props;
+const canonica = new URL(Astro.url.pathname, Astro.site).href;
+const ogUrl = new URL('/og.jpg', Astro.site).href;
+const tituloCompleto = pagina === 'inicio' ? titulo : `${titulo} · ${tienda.nombre}`;
+
+const nav = [
+  { id: 'catalogo', nombre: 'Catálogo', url: '/catalogo/' },
+  { id: 'torneos', nombre: 'Torneos', url: '/torneos/' },
+  { id: 'agenda', nombre: 'Agenda', url: '/agenda/' },
+  { id: 'tienda', nombre: 'La tienda', url: '/tienda/' },
+  { id: 'vende', nombre: 'Vende tu colección', url: '/vende-tu-coleccion/' },
+  { id: 'contacto', nombre: 'Contacto', url: '/contacto/' },
+];
+
+const ld: object[] = [jsonld ?? []].flat();
+if (migas?.length) {
+  ld.push({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [{ nombre: 'Inicio', url: '/' }, ...migas].map((m, i) => ({
+      '@type': 'ListItem', position: i + 1, name: m.nombre, ...(m.url ? { item: new URL(m.url, Astro.site).href } : {}),
+    })),
+  });
+}
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={descripcion} />
+    <link rel="canonical" href={canonica} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta property="og:type" content={ogTipo} />
+    <meta property="og:site_name" content={tienda.nombreCompleto} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonica} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="es_ES" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#0b0a14" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href={archivo} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={onest} as="font" type="font/woff2" crossorigin />
+    <style set:html={`
+      @font-face{font-family:'Archivo Variable';font-style:normal;font-display:swap;font-weight:100 900;font-stretch:62% 125%;src:url(${archivo}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+      @font-face{font-family:'Onest Variable';font-style:normal;font-display:swap;font-weight:100 900;src:url(${onest}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+      @font-face{font-family:'JetBrains Mono Variable';font-style:normal;font-display:swap;font-weight:100 800;src:url(${mono}) format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+      :root{--acento:${tienda.colores.acento};--noche:${tienda.colores.noche};--nacar:${tienda.colores.nacar}}
+    `} />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    {ld.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(ld.length === 1 ? ld[0] : ld)} />}
+    <slot name="head" />
+  </head>
+  <body data-pagina={pagina}>
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    {tienda.demo.activa && (
+      <p class="franja-demo">
+        {tienda.demo.aviso}: datos y precios de ejemplo. <a href="/panel/">Ver el panel del propietario</a>
+      </p>
+    )}
+    <header class="cabecera">
+      <div class="contenedor cab-in">
+        <Logo />
+        <nav class="nav-principal" aria-label="Principal">
+          {nav.map((n) => <a href={n.url} aria-current={pagina === n.id ? 'page' : undefined}>{n.nombre}</a>)}
+        </nav>
+        <div class="cab-acciones">
+          <button class="btn-icono" type="button" data-abrir="dlg-buscar" aria-label="Buscar productos y torneos" set:html={icono('buscar')} />
+          <button class="btn-icono" type="button" data-abrir="dlg-favoritos" aria-label="Tus favoritos">
+            <Fragment set:html={icono('corazon')} />
+            <span class="contador" data-contador-favoritos hidden>0</span>
+          </button>
+          <a class="btn btn--wa btn--peq cab-wa" href={enlaceWhatsApp()} target="_blank" rel="noopener"><Fragment set:html={icono('whatsapp')} />WhatsApp</a>
+          <button class="btn-icono btn-menu" type="button" data-abrir="dlg-menu" aria-label="Abrir menú" set:html={icono('menu')} />
+        </div>
+      </div>
+    </header>
+
+    <main id="contenido">
+      {migas?.length && (
+        <div class="contenedor migas-cont" style="padding-top:22px">
+          <nav aria-label="Migas de pan">
+            <ol class="migas" role="list">
+              <li><a href="/">Inicio</a></li>
+              {migas.map((m) => <li>{m.url ? <a href={m.url}>{m.nombre}</a> : <span aria-current="page">{m.nombre}</span>}</li>)}
+            </ol>
+          </nav>
+        </div>
+      )}
+      <slot />
+    </main>
+
+    {!panel && <footer class="pie">
+      <div class="contenedor">
+        <div class="pie-rejilla">
+          <div class="pie-marca">
+            <Logo />
+            <p>{tienda.descripcionCorta} Desde {tienda.desde} en {tienda.direccion.ciudad}.</p>
+            <div class="redes">
+              {tienda.redes.map((r) => (
+                <a href={r.url} target="_blank" rel="noopener" aria-label={`${r.red} de ${tienda.nombre} (enlace de ejemplo)`} set:html={icono(r.red.toLowerCase())} />
+              ))}
+            </div>
+          </div>
+          <div>
+            <h2>Catálogo</h2>
+            <ul>{CATEGORIAS.map((c) => <li><a href={`/catalogo/?categoria=${c.id}`}>{c.plural}</a></li>)}</ul>
+          </div>
+          <div>
+            <h2>Comunidad</h2>
+            <ul>
+              <li><a href="/torneos/">Torneos</a></li>
+              <li><a href="/torneos/clasificacion/">Clasificación</a></li>
+              <li><a href="/torneos/historial/">Historial</a></li>
+              <li><a href="/agenda/">Agenda</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Servicios</h2>
+            <ul>
+              <li><a href="/vende-tu-coleccion/">Vende o tasa tu colección</a></li>
+              <li><a href="/catalogo/">Reservas por WhatsApp</a></li>
+              <li><a href="/tienda/">Conoce la tienda</a></li>
+              <li><a href="/contacto/">Contacto</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Visítanos</h2>
+            <ul>
+              <li>{direccionCompleta}</li>
+              <li><a href={`tel:${tienda.contacto.telefonoEnlace}`}>{tienda.contacto.telefono}</a></li>
+              <li><a href={`mailto:${tienda.contacto.email}`}>{tienda.contacto.email}</a></li>
+              <li>{DIAS_SEMANA[6]}: {tramosTexto(tienda.horario[6])}</li>
+              <li><a href="/contacto/#horario">Horario completo</a></li>
+            </ul>
+          </div>
+        </div>
+        <p class="pie-gigante" aria-hidden="true">{tienda.nombre}</p>
+        <div class="pie-legal">
+          <span>© {new Date().getFullYear()} {tienda.nombreCompleto}{tienda.demo.activa ? ' · tienda ficticia de demostración' : ''}</span>
+          <nav aria-label="Información legal">
+            <a href="/legal/aviso-legal/">Aviso legal</a>
+            <a href="/legal/privacidad/">Privacidad</a>
+            <a href="/legal/cookies/">Cookies</a>
+            <a href="/panel/">Panel del propietario</a>
+          </nav>
+        </div>
+      </div>
+    </footer>}
+
+    {!panel && <a class="wa-flotante" href={enlaceWhatsApp()} target="_blank" rel="noopener" aria-label="Escribir a la tienda por WhatsApp">
+      <Fragment set:html={icono('whatsapp')} /><span>WhatsApp</span>
+    </a>}
+
+    <!-- Menú móvil -->
+    <dialog id="dlg-menu" class="menu-movil lateral" aria-label="Menú">
+      <div class="dlg-cab"><Logo /><button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar menú" set:html={icono('cerrar')} /></div>
+      <nav aria-label="Menú móvil">
+        <a href="/">Inicio <Fragment set:html={icono('flecha')} /></a>
+        {nav.map((n) => <a href={n.url} aria-current={pagina === n.id ? 'page' : undefined}>{n.nombre} <Fragment set:html={icono('flecha')} /></a>)}
+      </nav>
+      <div class="pie-menu">
+        <a class="btn btn--wa" href={enlaceWhatsApp()} target="_blank" rel="noopener"><Fragment set:html={icono('whatsapp')} />Escríbenos por WhatsApp</a>
+        <span>{direccionCompleta}</span>
+      </div>
+    </dialog>
+
+    <!-- Búsqueda rápida -->
+    <dialog id="dlg-buscar" class="osc" aria-label="Buscar">
+      <div class="dlg-cab" style="padding-bottom:8px">
+        <label class="solo-lector" for="buscar-rapido">Buscar en la tienda</label>
+        <div class="buscador-rapido">
+          <Fragment set:html={icono('buscar')} />
+          <input id="buscar-rapido" type="search" placeholder="Busca una carta, un sobre o un torneo…" autocomplete="off" />
+        </div>
+        <button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar búsqueda" set:html={icono('cerrar')} />
+      </div>
+      <div class="dlg-cuerpo" id="resultados-rapidos" aria-live="polite"></div>
+    </dialog>
+
+    <!-- Favoritos -->
+    <dialog id="dlg-favoritos" class="lateral" aria-labelledby="fav-titulo">
+      <div class="dlg-cab">
+        <div><p class="etiqueta">Guardado en este navegador</p><h2 id="fav-titulo" class="h3" style="margin-top:8px">Tus favoritos</h2></div>
+        <button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar favoritos" set:html={icono('cerrar')} />
+      </div>
+      <div class="dlg-cuerpo" id="lista-favoritos"></div>
+    </dialog>
+
+    <!-- Reserva por WhatsApp -->
+    <dialog id="dlg-reserva" class="hoja" aria-labelledby="res-titulo">
+      <div class="dlg-cab">
+        <div><p class="etiqueta">Reserva sin pagar online</p><h2 id="res-titulo" class="h3" style="margin-top:8px">Reservar producto</h2></div>
+        <button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar" set:html={icono('cerrar')} />
+      </div>
+      <form class="dlg-cuerpo" id="form-reserva" novalidate>
+        <div class="res-producto" id="res-producto"></div>
+        <div class="campo"><label for="res-nombre">Tu nombre</label><input class="entrada" id="res-nombre" name="nombre" autocomplete="name" required /><p class="error-campo" data-error="nombre" hidden></p></div>
+        <div class="campo"><label for="res-contacto">Teléfono o email</label><input class="entrada" id="res-contacto" name="contacto" autocomplete="tel" required /><p class="error-campo" data-error="contacto" hidden></p></div>
+        <div class="fila" style="--fila:14px;align-items:start">
+          <div class="campo" style="flex:1 1 120px"><label for="res-cantidad">Unidades</label><input class="entrada" id="res-cantidad" name="cantidad" type="number" min="1" value="1" inputmode="numeric" /><p class="error-campo" data-error="cantidad" hidden></p></div>
+          <div class="campo" style="flex:2 1 200px"><label for="res-recogida">¿Cuándo pasarías?</label>
+            <select class="entrada" id="res-recogida" name="recogida"><option>Hoy</option><option>Mañana</option><option>Esta semana</option><option>El fin de semana</option></select></div>
+        </div>
+        <div class="campo"><label for="res-nota">Comentario (opcional)</label><input class="entrada" id="res-nota" name="nota" /></div>
+        <button class="btn btn--wa btn--bloque" type="submit"><Fragment set:html={icono('whatsapp')} />Reservar y enviar por WhatsApp</button>
+        <p class="nota-demo"><Fragment set:html={icono('info')} /><span>La tienda te guarda el producto 48 h cuando te confirma por WhatsApp. En esta demo, la reserva también aparece en el <a href="/panel/#reservas">panel del propietario</a>.</span></p>
+      </form>
+    </dialog>
+
+    <!-- Aviso de disponibilidad -->
+    <dialog id="dlg-aviso" class="hoja" aria-labelledby="av-titulo">
+      <div class="dlg-cab">
+        <div><p class="etiqueta">Producto agotado</p><h2 id="av-titulo" class="h3" style="margin-top:8px">Avísame cuando vuelva</h2></div>
+        <button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar" set:html={icono('cerrar')} />
+      </div>
+      <form class="dlg-cuerpo" id="form-aviso" novalidate>
+        <div class="res-producto" id="av-producto"></div>
+        <div class="campo"><label for="av-nombre">Tu nombre</label><input class="entrada" id="av-nombre" name="nombre" autocomplete="name" required /><p class="error-campo" data-error="nombre" hidden></p></div>
+        <div class="campo"><label for="av-contacto">Teléfono o email</label><input class="entrada" id="av-contacto" name="contacto" required /><p class="error-campo" data-error="contacto" hidden></p></div>
+        <button class="btn btn--acento btn--bloque" type="submit">Quiero que me aviséis</button>
+        <p class="nota-demo"><Fragment set:html={icono('info')} /><span>La tienda verá tu petición en su panel y te escribirá cuando haya unidades. Esta demo no envía avisos automáticos.</span></p>
+      </form>
+    </dialog>
+
+    <div class="avisos" id="avisos" role="status" aria-live="polite"></div>
+    <script>
+      import '../scripts/app.ts';
+    </script>
+  </body>
+</html>

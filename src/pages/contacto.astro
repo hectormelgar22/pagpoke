@@ -1,0 +1,95 @@
+---
+import Base from '../layouts/Base.astro';
+import Horario from '../components/Horario.astro';
+import Mapa from '../components/Mapa.astro';
+import { tienda, direccionCompleta, enlaceWhatsApp, enlaceMapa } from '../data/tienda.ts';
+import { icono } from '../lib/iconos.ts';
+import { horarioSchema } from '../lib/horario.ts';
+
+const ld = {
+  '@context': 'https://schema.org', '@type': 'ContactPage', name: `Contacto · ${tienda.nombre}`,
+  mainEntity: {
+    '@type': 'HobbyShop', '@id': new URL('/#tienda', Astro.site).href, name: tienda.nombreCompleto, telephone: tienda.contacto.telefonoEnlace, email: tienda.contacto.email,
+    address: { '@type': 'PostalAddress', streetAddress: tienda.direccion.calle, postalCode: tienda.direccion.cp, addressLocality: tienda.direccion.ciudad, addressCountry: tienda.direccion.pais },
+    openingHoursSpecification: horarioSchema(tienda.horario),
+  },
+};
+const canales = [
+  { ico: 'whatsapp', t: 'WhatsApp', d: 'La forma más rápida. Respondemos en horario de tienda.', url: enlaceWhatsApp(), txt: 'Abrir chat', ext: true },
+  { ico: 'telefono', t: 'Teléfono', d: tienda.contacto.telefono, url: `tel:${tienda.contacto.telefonoEnlace}`, txt: 'Llamar', ext: false },
+  { ico: 'mail', t: 'Email', d: tienda.contacto.email, url: `mailto:${tienda.contacto.email}`, txt: 'Escribir', ext: false },
+  { ico: 'ubicacion', t: 'Dirección', d: direccionCompleta, url: enlaceMapa, txt: 'Cómo llegar', ext: true },
+];
+---
+<Base titulo="Contacto, horario y cómo llegar" descripcion={`Contacta con ${tienda.nombre} en ${tienda.direccion.ciudad}: WhatsApp, teléfono, email, horario de apertura y mapa.`} pagina="contacto" migas={[{ nombre: 'Contacto' }]} jsonld={ld}>
+  <section class="contenedor" style="padding-block:clamp(1.5rem,4vw,3rem) clamp(2rem,4vw,3rem)">
+    <p class="etiqueta"><span class="punto-vivo" data-punto-tienda></span><span data-estado-tienda>Horario de la tienda</span></p>
+    <h1 class="h1" style="margin-top:14px">Hablemos.</h1>
+    <p class="entradilla" style="margin-top:14px">¿Buscas una carta, quieres reservar o tienes dudas sobre un torneo? Escríbenos por donde te venga mejor.</p>
+  </section>
+  <section class="contenedor" style="padding-bottom:clamp(3rem,6vw,5rem)">
+    <div class="canales">
+      {canales.map((c) => (
+        <a class="canal" href={c.url} target={c.ext ? '_blank' : undefined} rel={c.ext ? 'noopener' : undefined}>
+          <span class="canal-ico" set:html={icono(c.ico)} />
+          <span class="canal-t">{c.t}</span><span class="canal-d">{c.d}</span>
+          <span class="enlace-flecha">{c.txt} <Fragment set:html={icono('flecha')} /></span>
+        </a>
+      ))}
+    </div>
+    <div class="dos-col" style="margin-top:clamp(2rem,5vw,3.5rem);align-items:start">
+      <form class="tarjeta form-contacto" id="form-contacto" novalidate>
+        <h2 class="h3">Envíanos un mensaje</h2>
+        <div class="campo"><label for="c-nombre">Nombre</label><input class="entrada" id="c-nombre" name="nombre" autocomplete="name" /><p class="error-campo" data-error="nombre" hidden></p></div>
+        <div class="campo"><label for="c-contacto">Teléfono o email</label><input class="entrada" id="c-contacto" name="contacto" autocomplete="email" /><p class="error-campo" data-error="contacto" hidden></p></div>
+        <div class="campo"><label for="c-motivo">Motivo</label><select class="entrada" id="c-motivo" name="motivo"><option>Busco una carta o producto</option><option>Reservas y pedidos</option><option>Torneos e inscripciones</option><option>Vender o tasar cartas</option><option>Otra consulta</option></select></div>
+        <div class="campo"><label for="c-mensaje">Mensaje</label><textarea class="entrada" id="c-mensaje" name="mensaje" maxlength="1000"></textarea><p class="error-campo" data-error="mensaje" hidden></p></div>
+        <label class="casilla"><input type="checkbox" name="privacidad" />Acepto que la tienda use estos datos solo para responderme (<a href="/legal/privacidad/">privacidad</a>).</label>
+        <p class="error-campo" data-error="privacidad" hidden></p>
+        <button class="btn btn--acento" type="submit">Enviar mensaje</button>
+        <p class="nota-demo"><Fragment set:html={icono('info')} /><span>Demo: el mensaje se guarda en este navegador y aparece en el <a href="/panel/#consultas">panel del propietario</a>. En la web real llegaría al email de la tienda.</span></p>
+        <div class="exito" data-contacto-ok hidden><span class="exito-sello" set:html={icono('check')} /><h3 class="h3">Mensaje enviado</h3><p style="color:var(--gris)">Te responderemos lo antes posible.</p><button class="btn btn--suave" type="button" data-otro-mensaje>Enviar otro</button></div>
+      </form>
+      <div class="pila" style="--pila:22px" id="horario">
+        <div class="tarjeta" style="padding:22px"><h2 class="h3" style="margin-bottom:10px">Horario</h2><Horario /></div>
+        <Mapa />
+        <p class="entradilla" style="font-size:.95rem">{tienda.direccion.comoLlegar}</p>
+      </div>
+    </div>
+  </section>
+  <style is:global>
+    .canales { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+    .canal { display: grid; gap: 6px; align-content: start; padding: 22px; border-radius: 22px; background: var(--blanco); border: 1px solid var(--linea); text-decoration: none; transition: transform .35s var(--ease), box-shadow .35s; }
+    .canal:hover { transform: translateY(-3px); box-shadow: var(--sombra); }
+    .canal-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--noche); color: var(--acento); margin-bottom: 8px; }
+    .canal-t { font-weight: 700; font-size: 1.1rem; }
+    .canal-d { color: var(--gris); font-size: .92rem; overflow-wrap: anywhere; }
+    .canal .enlace-flecha { margin-top: 8px; }
+    .form-contacto { padding: clamp(20px, 3vw, 30px); display: grid; gap: 16px; }
+  </style>
+  <script>
+    import { $, contactoValido, mostrarErrores, toast } from '../scripts/ui.ts';
+    import { mutar, nuevoId } from '../lib/almacen.ts';
+    const f = $<HTMLFormElement>('#form-contacto')!;
+    f.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const d = Object.fromEntries(new FormData(f)) as Record<string, string>;
+      const ok = mostrarErrores(f, {
+        nombre: (d.nombre ?? '').trim().length < 2 ? 'Escribe tu nombre.' : undefined,
+        contacto: !contactoValido(d.contacto ?? '') ? 'Escribe un teléfono o un email válido.' : undefined,
+        mensaje: (d.mensaje ?? '').trim().length < 10 ? 'Cuéntanos un poco más (mínimo 10 caracteres).' : undefined,
+        privacidad: !d.privacidad ? 'Necesitamos tu permiso para responderte.' : undefined,
+      });
+      if (!ok) return;
+      mutar((e) => e.consultas.unshift({ id: nuevoId('c'), nombre: d.nombre.trim(), contacto: d.contacto.trim(), motivo: d.motivo, mensaje: d.mensaje.trim(), fecha: new Date().toISOString(), atendida: false }));
+      for (const el of f.querySelectorAll<HTMLElement>(':scope > :not([data-contacto-ok])')) el.hidden = true;
+      $('[data-contacto-ok]')!.hidden = false;
+      toast('Mensaje enviado');
+    });
+    $('[data-otro-mensaje]')!.addEventListener('click', () => {
+      f.reset();
+      for (const el of f.querySelectorAll<HTMLElement>(':scope > :not([data-contacto-ok]):not(.error-campo)')) el.hidden = false;
+      $('[data-contacto-ok]')!.hidden = true;
+    });
+  </script>
+</Base>

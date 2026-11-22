@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import '../styles/torneos.css';
+import '../styles/panel.css';
+import { icono } from '../lib/iconos.ts';
+---
+<Base titulo="Panel del propietario (demo)" descripcion="Panel de gestión de la tienda: productos, reservas, consultas y torneos." pagina="panel" noindex panel>
+  <div class="panel">
+    <nav class="panel-nav" aria-label="Secciones del panel">
+      <a href="#resumen" data-seccion="resumen"><Fragment set:html={icono('panel')} />Resumen</a>
+      <a href="#productos" data-seccion="productos"><Fragment set:html={icono('cartas')} />Productos<span class="num" data-num="productos"></span></a>
+      <a href="#reservas" data-seccion="reservas"><Fragment set:html={icono('bolsa')} />Reservas<span class="num" data-num="reservas"></span></a>
+      <a href="#consultas" data-seccion="consultas"><Fragment set:html={icono('mail')} />Consultas<span class="num" data-num="consultas"></span></a>
+      <a href="#torneos" data-seccion="torneos"><Fragment set:html={icono('trofeo')} />Torneos<span class="num" data-num="torneos"></span></a>
+      <div class="separador">Abre la web en otra pestaña: los cambios que hagas aquí se ven allí al momento (en este mismo navegador).</div>
+    </nav>
+    <div class="panel-main">
+      <div class="panel-aviso" role="note">
+        <p><Fragment set:html={icono('info')} /><span><strong>Modo demostración.</strong> Los cambios se guardan solo en este navegador (no hay servidor ni base de datos). En la versión real, el panel tiene acceso con usuario y contraseña y los datos se guardan en un servidor seguro.</span></p>
+        <button class="btn btn--suave btn--peq" type="button" data-restablecer>Restablecer datos de la demo</button>
+      </div>
+      <div id="panel-contenido" aria-live="polite"><p class="vacio">Cargando panel…</p></div>
+    </div>
+  </div>
+
+  <dialog id="dlg-resultado" aria-labelledby="resultado-titulo">
+    <div class="dlg-cab"><div><p class="etiqueta" data-res-ronda></p><h2 id="resultado-titulo" class="h3" style="margin-top:8px">Resultado de la partida</h2></div><button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar" set:html={icono('cerrar')} /></div>
+    <div class="dlg-cuerpo" data-res-cuerpo></div>
+  </dialog>
+
+  <dialog id="dlg-form-torneo" aria-labelledby="ft-titulo" style="width:min(100% - 24px, 720px)">
+    <div class="dlg-cab"><h2 id="ft-titulo" class="h3">Nuevo torneo</h2><button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar" set:html={icono('cerrar')} /></div>
+    <form class="dlg-cuerpo" id="form-torneo" novalidate>
+      <div class="form-rejilla">
+        <div class="campo ancho"><label for="ft-nombre">Nombre del torneo</label><input class="entrada" id="ft-nombre" name="nombre" required maxlength="60" /><p class="error-campo" data-error="nombre" hidden></p></div>
+        <div class="campo"><label for="ft-fecha">Fecha</label><input class="entrada" id="ft-fecha" name="fecha" type="date" required /><p class="error-campo" data-error="fecha" hidden></p></div>
+        <div class="campo"><label for="ft-hora">Hora de inicio</label><input class="entrada" id="ft-hora" name="hora" type="time" required value="10:00" /><p class="error-campo" data-error="hora" hidden></p></div>
+        <div class="campo"><label for="ft-tipo">Tipo de evento</label>
+          <select class="entrada" id="ft-tipo" name="tipo"><option value="torneo">Torneo</option><option value="presentacion">Presentación de colección</option><option value="especial">Evento especial</option><option value="liga">Liga</option></select></div>
+        <div class="campo"><label for="ft-formato">Formato de competición</label>
+          <select class="entrada" id="ft-formato" name="formato"><option value="eliminacion">Eliminación directa</option><option value="suizo">Sistema suizo</option><option value="suizo-top">Suizo + top (eliminatoria final)</option></select>
+          <p class="ayuda">La doble eliminación está preparada en el modelo de datos, pero no activada en esta demo.</p></div>
+        <div class="campo"><label for="ft-modalidad">Modalidad</label><input class="entrada" id="ft-modalidad" name="modalidad" value="Estándar" /></div>
+        <div class="campo"><label for="ft-capacidad">Plazas máximas</label><input class="entrada" id="ft-capacidad" name="capacidad" type="number" min="2" max="256" value="16" required /><p class="error-campo" data-error="capacidad" hidden></p></div>
+        <div class="campo"><label for="ft-precio">Precio de inscripción (€)</label><input class="entrada" id="ft-precio" name="precio" type="number" min="0" step="0.5" value="5" /><p class="error-campo" data-error="precio" hidden></p></div>
+        <div class="campo"><label for="ft-mejorde">Partidas</label><select class="entrada" id="ft-mejorde" name="mejorDe"><option value="1">A una partida</option><option value="3" selected>Al mejor de 3</option></select></div>
+        <div class="campo" data-solo-suizo><label for="ft-rondas">Rondas suizas</label><input class="entrada" id="ft-rondas" name="rondasSuizas" type="number" min="0" max="12" value="0" /><p class="ayuda">0 = se calculan según inscritos.</p></div>
+        <div class="campo" data-solo-top><label for="ft-top">Corte (top)</label><select class="entrada" id="ft-top" name="topCorte"><option value="4">Top 4</option><option value="8" selected>Top 8</option><option value="16">Top 16</option></select></div>
+        <div class="campo ancho"><label for="ft-resumen">Descripción breve</label><input class="entrada" id="ft-resumen" name="resumen" maxlength="160" placeholder="Una frase que aparece en las tarjetas" /></div>
+        <div class="campo ancho"><label for="ft-premios">Premios (uno por línea)</label><textarea class="entrada" id="ft-premios" name="premios" rows="3"></textarea></div>
+        <label class="casilla"><input type="checkbox" name="inscripcionesAbiertas" checked />Inscripciones abiertas</label>
+        <label class="casilla"><input type="checkbox" name="destacado" />Destacar en la web (cuenta atrás)</label>
+      </div>
+      <p class="error-campo" data-error="general" hidden></p>
+      <button class="btn btn--acento" type="submit" data-ft-enviar>Crear torneo</button>
+    </form>
+  </dialog>
+  <script>
+    import '../scripts/panel.ts';
+  </script>
+</Base>

@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/tienda.css';
+import { PRODUCTOS, categoriaPorId, expansionPorId, RAREZAS, IDIOMAS, CONDICIONES, type Producto } from '../../data/catalogo.ts';
+import { tarjetaProducto, textoStock, accionProducto, metaProducto } from '../../lib/vistas/producto.ts';
+import { estadoInicial } from '../../lib/almacen.ts';
+import { tienda, enlaceWhatsApp } from '../../data/tienda.ts';
+import { icono } from '../../lib/iconos.ts';
+import { euros } from '../../lib/html.ts';
+
+export function getStaticPaths() {
+  return PRODUCTOS.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+interface Props { p: Producto }
+const { p } = Astro.props;
+const e = estadoInicial();
+const s = e.productos[p.id];
+const st = textoStock(s.stock);
+const cat = categoriaPorId.get(p.categoria)!;
+const exp = p.expansion ? expansionPorId.get(p.expansion) : null;
+const relacionados = PRODUCTOS.filter((x) => x.id !== p.id && (x.expansion === p.expansion && p.expansion ? true : x.categoria === p.categoria))
+  .sort((a, b) => (b.expansion === p.expansion ? 1 : 0) - (a.expansion === p.expansion ? 1 : 0))
+  .slice(0, 4);
+const filas: [string, string][] = [
+  ['Categoría', cat.plural],
+  ...(exp ? [['Expansión', `${exp.nombre} (${exp.codigo}, ${exp.anio})`] as [string, string]] : []),
+  ...(p.numero ? [['Número', p.numero] as [string, string]] : []),
+  ...(p.rareza ? [['Rareza', `${RAREZAS[p.rareza].simbolo} ${RAREZAS[p.rareza].nombre}`] as [string, string]] : []),
+  ...(p.idioma ? [['Idioma', IDIOMAS[p.idioma]] as [string, string]] : []),
+  ...(p.condicion ? [['Estado', CONDICIONES[p.condicion]] as [string, string]] : []),
+  ...p.detalles,
+];
+const titulo = `${p.nombre}${p.numero ? ` ${p.numero}` : ''}${exp ? ` · ${exp.nombre}` : ''}`;
+const ld = {
+  '@context': 'https://schema.org', '@type': 'Product', name: titulo, description: p.resumen, sku: p.id,
+  image: new URL(`/arte/${p.id}.svg`, Astro.site).href, category: cat.plural,
+  offers: {
+    '@type': 'Offer', price: s.precio.toFixed(2), priceCurrency: 'EUR', url: new URL(`/catalogo/${p.slug}/`, Astro.site).href,
+    availability: s.stock > 0 ? 'https://schema.org/InStoreOnly' : 'https://schema.org/OutOfStock',
+    itemCondition: 'https://schema.org/UsedCondition', seller: { '@type': 'Organization', name: tienda.nombreCompleto },
+  },
+};
+if (p.categoria !== 'cartas' && p.categoria !== 'coleccion') ld.offers.itemCondition = 'https://schema.org/NewCondition';
+---
+<Base titulo={titulo} descripcion={`${p.resumen} ${euros(s.precio)} en ${tienda.nombre} (${tienda.direccion.ciudad}). Consulta stock y resérvalo por WhatsApp.`} pagina="catalogo" ogTipo="product"
+  migas={[{ nombre: 'Catálogo', url: '/catalogo/' }, { nombre: cat.plural, url: `/catalogo/?categoria=${cat.id}` }, { nombre: p.nombre }]} jsonld={ld}>
+  <section class="contenedor seccion--ajustada" style="padding-top:8px">
+    <div class="ficha" style={`--c1:${p.arte.c1};--c2:${p.arte.c2}`}>
+      <div class="ficha-galeria">
+        <div class="pieza-carta" data-tilt>
+          <div class="tilt"><img src={`/arte/${p.id}.svg`} width="400" height="500" alt={`Ilustración de ${p.nombre}`} fetchpriority="high" /><span class="brillo"></span></div>
+        </div>
+      </div>
+      <div class="ficha-info">
+        <p class="etiqueta">{metaProducto(p)}</p>
+        <h1 class="h1" style="font-size:clamp(2.2rem,5vw,3.8rem)">{p.nombre}</h1>
+        {p.numero && <p class="mono" style="color:var(--gris)">{p.numero}{p.condicion ? ` · ${p.condicion}` : ''}</p>}
+        <p class="entradilla">{p.resumen}</p>
+        <div class="ficha-precio">
+          <span class="precio cifra" data-precio={p.id}>{euros(s.precio)}</span>
+          <span class={`stock stock--${st.clase}`} data-stock={p.id}>{st.texto}</span>
+        </div>
+        <div class="ficha-acciones">
+          <div data-accion={p.id}><Fragment set:html={String(accionProducto(p, s.stock))} /></div>
+          <button class="btn btn--suave producto-fav-ficha" type="button" data-favorito={p.id} aria-pressed="false" aria-label={`Guardar ${p.nombre} en favoritos`}><Fragment set:html={icono('corazon')} />Favorito</button>
+          <a class="btn btn--wa" href={enlaceWhatsApp(`Hola, tengo una pregunta sobre ${p.nombre}${p.numero ? ` (${p.numero})` : ''}.`)} target="_blank" rel="noopener"><Fragment set:html={icono('whatsapp')} />Preguntar</a>
+        </div>
+        <ul class="garantias" role="list">
+          <li><Fragment set:html={icono('escudo')} /><span><strong>Revisado en tienda.</strong> {p.categoria === 'cartas' ? 'Estado comprobado con lupa: centrado, bordes y superficie.' : 'Producto original y precintado de fábrica.'}</span></li>
+          <li><Fragment set:html={icono('reloj')} /><span><strong>Reserva 48 h.</strong> Te lo guardamos cuando te confirmamos por WhatsApp.</span></li>
+          <li><Fragment set:html={icono('tienda')} /><span><strong>Pagas al recoger.</strong> Efectivo, tarjeta o Bizum en {tienda.direccion.ciudad}.</span></li>
+        </ul>
+        <table class="tabla-datos">
+          <caption class="solo-lector">Detalles del producto</caption>
+          <tbody>{filas.map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}</tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  {relacionados.length > 0 && (
+    <section class="seccion clara" style="padding-top:clamp(2rem,4vw,3rem)">
+      <div class="contenedor">
+        <div class="cab-seccion"><div><p class="etiqueta">Sigue mirando</p><h2 class="h2" style="font-size:clamp(1.6rem,3.5vw,2.4rem)">{exp ? `Más de ${exp.nombre}` : `Más ${cat.plural.toLowerCase()}`}</h2></div></div>
+        <div class="rejilla-productos"><Fragment set:html={relacionados.map((x) => String(tarjetaProducto(x, e.productos[x.id]))).join('')} /></div>
+      </div>
+    </section>
+  )}
+  <script>
+    import { iniciarTilt } from '../../scripts/efectos.ts';
+    iniciarTilt();
+  </script>
+</Base>

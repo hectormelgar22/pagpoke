@@ -1,0 +1,12 @@
+---
+import { tienda, DIAS_SEMANA } from '../data/tienda.ts';
+import { tramosTexto } from '../lib/horario.ts';
+---
+<table class="horario">
+  <caption class="solo-lector">Horario de apertura</caption>
+  <tbody>
+    {[1, 2, 3, 4, 5, 6, 7].map((d) => (
+      <tr data-dia-semana={d}><th scope="row">{DIAS_SEMANA[d]}</th><td>{tramosTexto(tienda.horario[d])}</td></tr>
+    ))}
+  </tbody>
+</table>

@@ -1,0 +1,20 @@
+---
+/* Marca de la tienda: destello de cuatro puntas con lámina holográfica + nombre.
+   Para una tienda real, sustituir por su logotipo (SVG o PNG) manteniendo el mismo componente. */
+import { tienda } from '../data/tienda.ts';
+interface Props { clase?: string; soloIcono?: boolean }
+const { clase = 'logo', soloIcono = false } = Astro.props;
+const id = `lg${Math.random().toString(36).slice(2, 7)}`;
+---
+<a href="/" class={clase} aria-label={`${tienda.nombre}, ir al inicio`}>
+  <svg viewBox="0 0 32 32" aria-hidden="true">
+    <defs>
+      <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#5EEAD4" /><stop offset=".35" stop-color="#A78BFA" /><stop offset=".65" stop-color="#F472B6" /><stop offset="1" stop-color="#FFB547" />
+      </linearGradient>
+    </defs>
+    <path d="M16 1.5c.9 7.3 3.6 10.1 14.5 14.5C19.6 20.4 16.9 23.2 16 30.5 15.1 23.2 12.4 20.4 1.5 16 12.4 11.6 15.1 8.8 16 1.5Z" fill={`url(#${id})`} />
+    <circle cx="25.5" cy="6.5" r="1.6" fill="#FFB547" />
+  </svg>
+  {!soloIcono && <span class="logo-texto">{tienda.nombre}</span>}
+</a>

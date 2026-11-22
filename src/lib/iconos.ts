@@ -1,0 +1,49 @@
+/* Iconos propios en SVG (trazo de 1,75 px). Uso: icono('buscar'). Decorativos por defecto (aria-hidden). */
+const P: Record<string, string> = {
+  buscar: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  corazon: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h10"/>',
+  cerrar: '<path d="M6 6l12 12M18 6 6 18"/>',
+  flecha: '<path d="M5 12h14M13 6l6 6-6 6"/>',
+  atras: '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  abajo: '<path d="m6 9 6 6 6-6"/>',
+  calendario: '<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  reloj: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  ubicacion: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/>',
+  trofeo: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/>',
+  usuarios: '<circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M15.5 5.6a3.2 3.2 0 0 1 0 5.8M17.5 14.2A5.5 5.5 0 0 1 20.5 19"/>',
+  filtro: '<path d="M4 6h16M7 12h10M10 18h4"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  alerta: '<path d="M12 4 2.8 19.5h18.4L12 4Z"/><path d="M12 10v4M12 17v.5"/>',
+  info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.5"/>',
+  tienda: '<path d="M4 9.5 5.5 4h13L20 9.5M4 9.5V20h16V9.5M4 9.5h16"/><path d="M9.5 20v-5h5v5"/>',
+  telefono: '<path d="M6.5 4h3l1.5 4-2 1.2a10 10 0 0 0 5.8 5.8L16 13l4 1.5v3A2.5 2.5 0 0 1 17.5 20 14.5 14.5 0 0 1 4 6.5 2.5 2.5 0 0 1 6.5 4Z"/>',
+  mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/>',
+  mas: '<path d="M12 5v14M5 12h14"/>',
+  menos: '<path d="M5 12h14"/>',
+  editar: '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/>',
+  papelera: '<path d="M4.5 7h15M10 4h4M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/>',
+  estrella: '<path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.8L12 3.5Z"/>',
+  destello: '<path d="M12 2.5c.6 5 2.5 7 9.5 9.5-7 2.5-8.9 4.5-9.5 9.5-.6-5-2.5-7-9.5-9.5 7-2.5 8.9-4.5 9.5-9.5Z"/>',
+  descargar: '<path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/>',
+  externo: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  camara: '<path d="M4 8h3.5L9 5.5h6L16.5 8H20v11H4V8Z"/><circle cx="12" cy="13" r="3.5"/>',
+  lupa: '<circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5 5M8 10.5h5"/>',
+  escudo: '<path d="M12 3.5 5 6v5.5c0 4.4 3 7.6 7 9 4-1.4 7-4.6 7-9V6l-7-2.5Z"/><path d="m9 12 2 2 4-4"/>',
+  cartas: '<rect x="4" y="6" width="11" height="15" rx="1.5"/><path d="M8.5 3h10a1.5 1.5 0 0 1 1.5 1.5V17"/>',
+  bolsa: '<path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/>',
+  rayo: '<path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3Z"/>',
+  panel: '<rect x="3.5" y="4" width="17" height="16" rx="2"/><path d="M3.5 9h17M9 9v11"/>',
+  intercambio: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+  instagram: '<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><path d="M16.8 7.2v.1"/>',
+  tiktok: '<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5M14 4c.4 2.6 2.2 4.2 5 4.3"/>',
+  discord: '<path d="M7 7.5c3.3-1.3 6.7-1.3 10 0l1.8 8.5c-1.6 1.3-3.2 2-4.8 2.3l-.8-1.6M7 7.5 5.2 16c1.6 1.3 3.2 2 4.8 2.3l.8-1.6M8 15.5c2.7 1.2 5.3 1.2 8 0"/><circle cx="9.6" cy="12" r=".9"/><circle cx="14.4" cy="12" r=".9"/>',
+};
+
+const WA =
+  '<path fill="currentColor" stroke="none" d="M12 2.2a9.8 9.8 0 0 0-8.4 14.8L2.3 21.8l4.9-1.3A9.8 9.8 0 1 0 12 2.2Zm0 17.8a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.8.8-2.8-.2-.3A8 8 0 1 1 12 20Zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.2 5 5 0 0 0 1 2.6 11.4 11.4 0 0 0 4.4 3.9c1.6.7 2.3.8 3.1.6.5-.1 1.4-.6 1.7-1.1.2-.6.2-1 .1-1.1l-.5-.2Z"/>';
+
+export function icono(nombre: string, clase = 'i'): string {
+  const cuerpo = nombre === 'whatsapp' ? WA : P[nombre];
+  return `<svg class="${clase}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${cuerpo ?? ''}</svg>`;
+}

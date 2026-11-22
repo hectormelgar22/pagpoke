@@ -1,0 +1,77 @@
+---
+/* Ficha de torneo: se genera con los datos de partida y el navegador la actualiza con el estado guardado. */
+import type { Torneo, Jugador } from '../lib/tipos.ts';
+import { heroTorneo, fichaCuerpo } from '../lib/vistas/ficha.ts';
+import { icono } from '../lib/iconos.ts';
+import { ETIQUETA_DIVISION } from '../lib/torneo.ts';
+interface Props { t?: Torneo; jugadores?: Record<string, Jugador>; ahora?: Date }
+const { t, jugadores = {}, ahora = new Date() } = Astro.props;
+---
+<div data-ficha-torneo={t?.id ?? ''}>
+  <section class={`torneo-hero osc tema-${t?.tema ?? 'ambar'}`} data-ficha-hero>
+    <div class="contenedor">
+      <nav aria-label="Migas de pan"><ol class="migas" role="list"><li><a href="/">Inicio</a></li><li><a href="/torneos/">Torneos</a></li><li><span aria-current="page" data-migas-nombre>{t?.nombre ?? 'Torneo'}</span></li></ol></nav>
+      <div data-ficha-hero-in>{t ? <Fragment set:html={String(heroTorneo(t, ahora))} /> : <p class="entradilla">Cargando torneo…</p>}</div>
+    </div>
+  </section>
+  <section class="seccion osc" style="padding-top:clamp(2rem,4vw,3rem)">
+    <div class="contenedor" data-ficha-cuerpo>
+      {t && <Fragment set:html={String(fichaCuerpo(t, jugadores, ahora))} />}
+    </div>
+  </section>
+</div>
+
+<dialog id="dlg-inscripcion" class="osc hoja" aria-labelledby="ins-titulo">
+  <div class="dlg-cab">
+    <div style="flex:1">
+      <div class="pasos-ins" aria-hidden="true"><span class="hecho"></span><span></span><span></span></div>
+      <p class="etiqueta" data-ins-paso-texto>Paso 1 de 3 · Condiciones</p>
+      <h2 id="ins-titulo" class="h3" style="margin-top:8px" data-ins-titulo>Inscripción</h2>
+    </div>
+    <button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar" set:html={icono('cerrar')} />
+  </div>
+  <div class="dlg-cuerpo">
+    <div data-paso="1" class="pila" style="--pila:16px">
+      <ul class="resumen-condiciones" role="list" data-ins-resumen></ul>
+      <div><p style="font-weight:600;margin-bottom:8px">Normas del torneo</p><ul class="lista-marcas" role="list" data-ins-normas style="font-size:.92rem;color:var(--niebla)"></ul></div>
+      <label class="casilla"><input type="checkbox" name="aceptaNormas" form="form-ins" />He leído las normas y me comprometo a avisar si no puedo asistir.</label>
+      <p class="error-campo" data-error-paso1 hidden></p>
+      <button class="btn btn--acento btn--bloque" type="button" data-siguiente>Continuar</button>
+    </div>
+    <form data-paso="2" id="form-ins" class="pila" style="--pila:14px" novalidate hidden>
+      <div class="campo"><label for="ins-nombre">Nombre y apellido</label><input class="entrada" id="ins-nombre" name="nombre" autocomplete="name" required /><p class="error-campo" data-error="nombre" hidden></p></div>
+      <div class="campo"><label for="ins-nick">Nick de jugador</label><input class="entrada" id="ins-nick" name="nick" autocomplete="nickname" maxlength="20" required /><p class="ayuda">Es el nombre que aparecerá en el cuadro y en la clasificación.</p><p class="error-campo" data-error="nick" hidden></p></div>
+      <div class="campo"><label for="ins-division">División</label>
+        <select class="entrada" id="ins-division" name="division" required>
+          <option value="">Elige tu división</option>
+          <option value="junior">{ETIQUETA_DIVISION.junior} (hasta 12 años)</option>
+          <option value="senior">{ETIQUETA_DIVISION.senior} (13 a 16 años)</option>
+          <option value="master">{ETIQUETA_DIVISION.master} (17 años o más)</option>
+        </select><p class="error-campo" data-error="division" hidden></p></div>
+      <div class="campo"><label for="ins-contacto">Teléfono o email</label><input class="entrada" id="ins-contacto" name="contacto" autocomplete="email" required /><p class="ayuda">Solo lo ve la tienda, para confirmarte la plaza.</p><p class="error-campo" data-error="contacto" hidden></p></div>
+      <div class="campo"><label for="ins-id">ID de jugador oficial (opcional)</label><input class="entrada" id="ins-id" name="idOficial" inputmode="numeric" /><p class="error-campo" data-error="idOficial" hidden></p></div>
+      <p class="error-campo" data-error="general" hidden></p>
+      <div class="fila" style="--fila:10px">
+        <button class="btn btn--suave" type="button" data-atras>Atrás</button>
+        <button class="btn btn--acento" type="submit" style="flex:1" data-ins-enviar>Enviar inscripción</button>
+      </div>
+    </form>
+    <div data-paso="3" hidden>
+      <div class="exito">
+        <span class="exito-sello" set:html={icono('check')} />
+        <h3 class="h2" style="font-size:1.8rem" data-exito-titulo>¡Inscripción enviada!</h3>
+        <p data-exito-texto style="color:var(--niebla)"></p>
+        <div data-exito-plazas style="width:100%"></div>
+        <div class="fila" style="justify-content:center;--fila:8px">
+          <a class="btn btn--wa btn--peq" data-exito-wa target="_blank" rel="noopener" href="/"><Fragment set:html={icono('whatsapp')} />Avisar a la tienda</a>
+          <button class="btn btn--suave btn--peq" type="button" data-ics><Fragment set:html={icono('calendario')} />Añadir al calendario</button>
+          <button class="btn btn--fantasma btn--peq" type="button" data-ver-participantes>Ver participantes</button>
+        </div>
+        <p class="nota-demo" style="text-align:left"><Fragment set:html={icono('info')} /><span>Demo: la inscripción se guarda en este navegador y aparece en el <a href="/panel/#torneos">panel del propietario</a>. En la web real llegaría a la tienda, que confirma la plaza.</span></p>
+      </div>
+    </div>
+  </div>
+</dialog>
+<script>
+  import '../scripts/ficha-torneo.ts';
+</script>

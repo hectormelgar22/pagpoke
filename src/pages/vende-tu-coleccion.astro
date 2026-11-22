@@ -1,0 +1,173 @@
+---
+import Base from '../layouts/Base.astro';
+import Foto from '../components/Foto.astro';
+import { tienda } from '../data/tienda.ts';
+import { FOTOS } from '../data/fotos.ts';
+import { icono } from '../lib/iconos.ts';
+
+const faq = [
+  ['¿Cuánto me vais a pagar?', 'Depende del estado y del precio de mercado de cada carta. Te damos una oferta orientativa con las fotos y el precio final al revisar las cartas en tienda, siempre explicado.'],
+  ['¿Es mejor dinero o crédito de tienda?', 'Tú eliges. El crédito de tienda vale un 20 % más y lo puedes gastar en cartas, producto sellado o inscripciones a torneos.'],
+  ['¿Compráis cartas sueltas de poco valor?', 'Sí, en lotes. Las cartas de valor se miran una a una; las comunes y poco comunes se valoran por cantidad.'],
+  ['¿Y si no me convence la oferta?', 'No pasa nada: la valoración es gratuita y sin compromiso. Te llevas tus cartas.'],
+  ['¿Puedo vender si soy menor de edad?', 'Sí, viniendo con tu madre, padre o tutor legal.'],
+];
+---
+<Base titulo="Vende, cambia o tasa tu colección" descripcion={`Compramos colecciones de cartas Pokémon en ${tienda.direccion.ciudad}: cartas sueltas, carpetas, producto sellado y graduadas. Valoración gratuita, pago en efectivo o crédito de tienda.`} pagina="vende">
+  <section class="seccion osc" style="padding-top:clamp(3rem,6vw,5rem)">
+    <div class="contenedor dos-col">
+      <div class="pila" style="--pila:20px">
+        <p class="etiqueta"><Fragment set:html={icono('intercambio')} />Compra · venta · intercambio · tasación</p>
+        <h1 class="h1">Tus cartas valen más de lo que crees.</h1>
+        <p class="entradilla">Cuéntanos qué tienes, mándanos unas fotos y te damos una valoración sin compromiso. Puedes cobrar en efectivo o en crédito de tienda con un 20 % extra.</p>
+        <div class="fila"><a class="btn btn--acento" href="#valorar">Valorar mi colección</a><a class="btn btn--fantasma" href="#como-funciona">Cómo funciona</a></div>
+        <div class="datos-tienda" style="margin-top:8px">
+          <div><strong>24 h</strong><span>para responderte</span></div>
+          <div><strong>+20 %</strong><span>en crédito de tienda</span></div>
+          <div><strong>0 €</strong><span>valorar es gratis</span></div>
+        </div>
+      </div>
+      <div class="foto-marco foto-marco--alta"><Foto src={FOTOS.tasacion.src} alt={FOTOS.tasacion.alt} prioridad sizes="(min-width: 960px) 45vw, 100vw" /></div>
+    </div>
+  </section>
+
+  <section class="seccion clara" id="como-funciona">
+    <div class="contenedor">
+      <div class="cab-seccion"><div><p class="etiqueta">El proceso</p><h2 class="h2">Cuatro pasos, sin letra pequeña.</h2></div></div>
+      <ol class="pasos pasos--fila" role="list">
+        <li><strong>Rellenas el formulario</strong><p>Qué quieres hacer, qué tienes y unas fotos.</p></li>
+        <li><strong>Te respondemos</strong><p>En menos de 24 h, con una oferta orientativa.</p></li>
+        <li><strong>Revisamos contigo</strong><p>En tienda, carta a carta, y te explicamos el precio.</p></li>
+        <li><strong>Cobras</strong><p>En efectivo, por transferencia o en crédito de tienda (+20 %).</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="seccion blanca" id="valorar">
+    <div class="contenedor dos-col" style="align-items:start">
+      <div class="pila" style="--pila:18px">
+        <p class="etiqueta">Solicitud de valoración</p>
+        <h2 class="h2">Cuéntanos qué tienes.</h2>
+        <p class="entradilla">Cuanto más nos cuentes, más ajustada será la oferta. Si tienes cartas de valor, una foto de cada una por delante y por detrás nos ayuda mucho.</p>
+        <ul class="garantias" role="list">
+          <li><Fragment set:html={icono('escudo')} /><span><strong>Sin compromiso.</strong> Si no te convence, te llevas tus cartas.</span></li>
+          <li><Fragment set:html={icono('lupa')} /><span><strong>Revisión delante de ti.</strong> Nada de llevarse cartas a la trastienda.</span></li>
+          <li><Fragment set:html={icono('mail')} /><span><strong>Tus datos, solo para responderte.</strong> No los usamos para nada más.</span></li>
+        </ul>
+      </div>
+      <div class="tarjeta formulario-venta">
+        <div class="pasos-ins" aria-hidden="true" data-barra-venta><span class="hecho"></span><span></span><span></span><span></span></div>
+        <p class="etiqueta" data-paso-venta-texto>Paso 1 de 4 · Qué quieres hacer</p>
+        <form id="form-venta" novalidate>
+          <fieldset data-pv="1">
+            <legend class="h3">¿Qué quieres hacer?</legend>
+            <div class="opciones-grandes">
+              <label><input type="radio" name="operacion" value="vender" checked /><span><strong>Vender</strong><small>Te pagamos en efectivo o crédito.</small></span></label>
+              <label><input type="radio" name="operacion" value="intercambiar" /><span><strong>Intercambiar</strong><small>Cambia tus cartas por otras o por producto.</small></span></label>
+              <label><input type="radio" name="operacion" value="valorar" /><span><strong>Solo valorar</strong><small>Quieres saber cuánto vale, sin vender.</small></span></label>
+            </div>
+          </fieldset>
+          <fieldset data-pv="2" hidden>
+            <legend class="h3">¿Qué tienes?</legend>
+            <div class="campo"><label for="v-material">Tipo de material</label><select class="entrada" id="v-material" name="material"><option>Cartas sueltas de valor</option><option>Colección completa o carpetas</option><option>Producto sellado (sobres, cajas)</option><option>Cartas graduadas</option><option>Un poco de todo</option></select></div>
+            <div class="campo"><label for="v-cantidad">Cantidad aproximada</label><select class="entrada" id="v-cantidad" name="cantidad"><option>Menos de 50 cartas</option><option>Entre 50 y 500 cartas</option><option>Entre 500 y 2.000 cartas</option><option>Más de 2.000 cartas</option></select></div>
+            <div class="campo"><label for="v-estado">Estado general</label><select class="entrada" id="v-estado" name="estadoCartas"><option>Como nuevas, siempre enfundadas</option><option>Usadas con cuidado</option><option>Muy jugadas</option><option>No lo sé</option></select></div>
+            <div class="campo"><label for="v-detalle">Detalles (opcional)</label><textarea class="entrada" id="v-detalle" name="detalle" placeholder="Expansiones, cartas destacadas, si están graduadas…" maxlength="600"></textarea></div>
+          </fieldset>
+          <fieldset data-pv="3" hidden>
+            <legend class="h3">Fotos de tus cartas</legend>
+            <label class="subir-fotos" for="v-fotos">
+              <Fragment set:html={icono('camara')} />
+              <strong>Añadir fotos</strong><small>Hasta 8 imágenes (JPG o PNG, máx. 10 MB cada una)</small>
+              <input id="v-fotos" type="file" accept="image/*" multiple class="solo-lector" />
+            </label>
+            <p class="error-campo" data-error="fotos" hidden></p>
+            <ul class="miniaturas" role="list" data-miniaturas></ul>
+            <p class="nota-demo"><Fragment set:html={icono('info')} /><span>En esta demo las fotos no salen de tu dispositivo. Al enviar por WhatsApp, adjúntalas en el chat. En la web real se subirían de forma segura al servidor de la tienda.</span></p>
+          </fieldset>
+          <fieldset data-pv="4" hidden>
+            <legend class="h3">¿Cómo te contactamos?</legend>
+            <div class="campo"><label for="v-nombre">Nombre</label><input class="entrada" id="v-nombre" name="nombre" autocomplete="name" /><p class="error-campo" data-error="nombre" hidden></p></div>
+            <div class="campo"><label for="v-contacto">Teléfono o email</label><input class="entrada" id="v-contacto" name="contacto" autocomplete="email" /><p class="error-campo" data-error="contacto" hidden></p></div>
+            <label class="casilla"><input type="checkbox" name="privacidad" />Acepto que la tienda use estos datos solo para responder a mi solicitud (<a href="/legal/privacidad/">privacidad</a>).</label>
+            <p class="error-campo" data-error="privacidad" hidden></p>
+          </fieldset>
+          <div class="fila" style="--fila:10px;margin-top:20px" data-botones-venta>
+            <button class="btn btn--suave" type="button" data-pv-atras hidden>Atrás</button>
+            <button class="btn btn--acento" type="button" data-pv-siguiente style="flex:1">Continuar</button>
+            <button class="btn btn--acento" type="submit" data-pv-enviar style="flex:1" hidden>Enviar solicitud</button>
+          </div>
+        </form>
+        <div data-venta-ok hidden class="exito">
+          <span class="exito-sello" set:html={icono('check')} />
+          <h3 class="h2" style="font-size:1.8rem">¡Solicitud recibida!</h3>
+          <p style="color:var(--gris)" data-venta-resumen></p>
+          <div class="fila" style="justify-content:center">
+            <a class="btn btn--wa" data-venta-wa target="_blank" rel="noopener" href="/"><Fragment set:html={icono('whatsapp')} />Enviar fotos por WhatsApp</a>
+            <button class="btn btn--suave" type="button" data-venta-otra>Hacer otra solicitud</button>
+          </div>
+          <p class="nota-demo" style="text-align:left"><Fragment set:html={icono('info')} /><span>Demo: la solicitud aparece en el <a href="/panel/#consultas">panel del propietario</a>, en «Ventas y tasaciones».</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {tienda.cardwise.mostrar && (
+    <section class="seccion osc" aria-labelledby="t-cw">
+      <div class="contenedor dos-col">
+        <div class="pila" style="--pila:18px">
+          <p class="fila" style="--fila:10px"><span class="etiqueta">Tasación asistida</span><span class="pill pill--proximamente">Función opcional · demostración conceptual</span></p>
+          <h2 class="h2" id="t-cw">Identificar y valorar cartas en segundos, en el mostrador.</h2>
+          <p class="entradilla">Las tiendas que trabajan con <strong>CardwiseTCG</strong> pueden fotografiar una carta en el mostrador, identificarla y consultar su precio de referencia para hacer ofertas más rápidas y justificadas.</p>
+          <p class="nota-demo"><Fragment set:html={icono('info')} /><span>Esta web está preparada para mostrar ese servicio cuando la tienda lo active. En esta demo no hay ninguna conexión con CardwiseTCG: no se analiza ninguna imagen ni se calcula ningún precio.</span></p>
+          <a class="enlace-flecha" href={tienda.cardwise.url} target="_blank" rel="noopener">Conocer CardwiseTCG <Fragment set:html={icono('externo')} /></a>
+        </div>
+        <ol class="cw-flujo" role="list" aria-label="Cómo sería el flujo">
+          <li><span class="cw-ico" set:html={icono('camara')} /><div><strong>1 · Foto en mostrador</strong><p>La tienda fotografía la carta con el móvil o la tablet.</p></div></li>
+          <li><span class="cw-ico" set:html={icono('lupa')} /><div><strong>2 · Identificación</strong><p>Se reconoce la carta: nombre, expansión y número.</p></div></li>
+          <li><span class="cw-ico" set:html={icono('cartas')} /><div><strong>3 · Precio de referencia</strong><p>La tienda ve el valor de mercado y prepara su oferta.</p></div></li>
+        </ol>
+      </div>
+    </section>
+  )}
+
+  <section class="seccion clara">
+    <div class="contenedor dos-col" style="align-items:start">
+      <div class="pila" style="--pila:16px"><p class="etiqueta">Preguntas frecuentes</p><h2 class="h2">Lo que más nos preguntan.</h2></div>
+      <div class="preguntas">{faq.map(([p, r]) => <details><summary>{p}</summary><p>{r}</p></details>)}</div>
+    </div>
+  </section>
+
+  <style is:global>
+    .pasos--fila { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+    .formulario-venta { padding: clamp(20px, 3vw, 32px); display: grid; gap: 14px; box-shadow: var(--sombra); }
+    .formulario-venta fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 16px; }
+    .formulario-venta legend { margin-bottom: 16px; }
+    .formulario-venta .pasos-ins span { background: var(--nacar-2); }
+    .formulario-venta .pasos-ins span.hecho { background: var(--acento); }
+    .opciones-grandes { display: grid; gap: 10px; }
+    .opciones-grandes label { position: relative; cursor: pointer; }
+    .opciones-grandes input { position: absolute; opacity: 0; }
+    .opciones-grandes span { display: grid; gap: 2px; padding: 16px 18px; border-radius: 16px; border: 1.5px solid var(--linea); transition: border-color .2s, background-color .2s; }
+    .opciones-grandes small { color: var(--gris); }
+    .opciones-grandes input:checked + span { border-color: var(--noche); background: var(--nacar); box-shadow: inset 4px 0 0 var(--acento); }
+    .opciones-grandes input:focus-visible + span { outline: 2px solid var(--acento); outline-offset: 2px; }
+    .subir-fotos { display: grid; justify-items: center; gap: 6px; padding: 28px; border-radius: 18px; border: 2px dashed var(--linea); text-align: center; cursor: pointer; transition: border-color .2s, background-color .2s; }
+    .subir-fotos:hover, .subir-fotos:focus-within { border-color: var(--noche); background: var(--nacar); }
+    .subir-fotos .i { width: 30px; height: 30px; }
+    .subir-fotos small { color: var(--gris); }
+    .miniaturas { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+    .miniaturas li { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: var(--nacar); }
+    .miniaturas img { width: 100%; height: 100%; object-fit: cover; }
+    .miniaturas button { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(11,10,20,.75); color: #fff; }
+    .miniaturas button .i { width: 15px; height: 15px; }
+    .datos-tienda li { list-style: none; }
+    .cw-flujo { display: grid; gap: 12px; }
+    .cw-flujo li { display: flex; gap: 16px; align-items: flex-start; padding: 20px; border-radius: 20px; background: var(--noche-2); border: 1px solid var(--linea-osc); }
+    .cw-flujo p { color: var(--niebla); font-size: .92rem; margin-top: 4px; }
+    .cw-ico { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: var(--holo); color: var(--noche); flex: none; }
+  </style>
+  <script>
+    import '../scripts/vende.ts';
+  </script>
+</Base>

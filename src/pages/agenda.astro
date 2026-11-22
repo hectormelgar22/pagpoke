@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+import CabeceraTorneos from '../components/CabeceraTorneos.astro';
+import '../styles/torneos.css';
+import { TIPOS_EVENTO } from '../data/eventos.ts';
+import { tienda } from '../data/tienda.ts';
+import { icono } from '../lib/iconos.ts';
+---
+<Base titulo="Agenda de eventos y torneos" descripcion={`Calendario de ${tienda.nombre}: torneos, liga semanal, presentaciones de nuevas colecciones, eventos especiales y tardes de juego libre en ${tienda.direccion.ciudad}.`} pagina="agenda">
+  <CabeceraTorneos actual="agenda" etiqueta="Agenda de la tienda" titulo="Lo que pasa en la tienda, día a día." texto="Torneos, liga, presentaciones y tardes de juego libre. Toca un evento para ver los detalles o añadirlo a tu calendario." />
+  <section class="seccion clara" style="padding-top:clamp(2rem,4vw,3rem)">
+    <div class="contenedor">
+      <div class="agenda-cab">
+        <div class="fila" style="--fila:8px">
+          <button class="btn-icono" type="button" data-mes="-1" aria-label="Mes anterior" set:html={icono('atras')} style="border:1px solid var(--linea)" />
+          <h2 class="agenda-mes" data-mes-titulo aria-live="polite">Agenda</h2>
+          <button class="btn-icono" type="button" data-mes="1" aria-label="Mes siguiente" set:html={icono('flecha')} style="border:1px solid var(--linea)" />
+          <button class="btn btn--suave btn--peq" type="button" data-hoy>Hoy</button>
+        </div>
+        <div class="chips leyenda" role="group" aria-label="Tipos de evento">
+          {Object.entries(TIPOS_EVENTO).map(([k, v]) => <button class="chip" type="button" data-tipo={k} aria-pressed="true" style={`--c:${v.color}`}>{v.nombre}</button>)}
+        </div>
+      </div>
+      <div class="calendario-envoltura"><div class="calendario" data-calendario role="grid" aria-label="Calendario del mes"></div></div>
+      <div class="agenda-lista agenda-lista--movil" data-lista></div>
+      <p class="nota-demo" style="margin-top:20px"><Fragment set:html={icono('info')} /><span>Los eventos semanales se repiten siempre el mismo día. Los torneos con inscripción enlazan a su ficha.</span></p>
+    </div>
+  </section>
+  <dialog id="dlg-evento" class="hoja" aria-labelledby="ev-titulo">
+    <div class="dlg-cab"><div><p data-ev-tipo></p><h2 id="ev-titulo" class="h3" style="margin-top:10px" data-ev-nombre></h2></div><button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar" set:html={icono('cerrar')} /></div>
+    <div class="dlg-cuerpo" data-ev-cuerpo></div>
+  </dialog>
+  <script>
+    import '../scripts/agenda.ts';
+  </script>
+</Base>

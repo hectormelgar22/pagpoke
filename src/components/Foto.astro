@@ -1,0 +1,26 @@
+---
+/* Foto optimizada: AVIF/WebP, varios tamaños, dimensiones fijas (sin saltos de diseño). */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  sizes?: string;
+  prioridad?: boolean;
+  clase?: string;
+  anchos?: number[];
+}
+const { src, alt, sizes = '100vw', prioridad = false, clase, anchos = [480, 800, 1200, 1600] } = Astro.props;
+---
+<Picture
+  src={src}
+  alt={alt}
+  formats={['avif', 'webp']}
+  widths={anchos.filter((w) => w <= src.width)}
+  sizes={sizes}
+  quality={72}
+  loading={prioridad ? 'eager' : 'lazy'}
+  fetchpriority={prioridad ? 'high' : 'auto'}
+  decoding="async"
+  class={clase}
+/>

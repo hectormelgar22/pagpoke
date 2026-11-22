@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import FichaTorneo from '../../components/FichaTorneo.astro';
+import '../../styles/torneos.css';
+import { estadoInicial } from '../../lib/almacen.ts';
+import type { Torneo } from '../../lib/tipos.ts';
+import { tienda } from '../../data/tienda.ts';
+import { fechaLarga, hora } from '../../lib/fechas.ts';
+import { ETIQUETA_FORMATO, estadoTorneo } from '../../lib/torneo.ts';
+
+export function getStaticPaths() {
+  const e = estadoInicial();
+  return e.torneos.map((t) => ({ params: { slug: t.slug }, props: { id: t.id } }));
+}
+const ahora = new Date();
+const e = estadoInicial(ahora);
+const t = e.torneos.find((x) => x.id === Astro.props.id) as Torneo;
+const estado = estadoTorneo(t, ahora);
+const dir = tienda.direccion;
+const ld = {
+  '@context': 'https://schema.org', '@type': 'Event', name: `${t.nombre} · ${tienda.nombre}`, description: t.descripcion,
+  startDate: t.inicio, endDate: new Date(Date.parse(t.inicio) + t.duracionMin * 60000).toISOString(),
+  eventStatus: 'https://schema.org/EventScheduled', eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: { '@type': 'Place', name: tienda.nombreCompleto, address: { '@type': 'PostalAddress', streetAddress: dir.calle, postalCode: dir.cp, addressLocality: dir.ciudad, addressCountry: dir.pais } },
+  organizer: { '@type': 'Organization', name: tienda.nombreCompleto, url: new URL('/', Astro.site).href },
+  image: new URL('/og.jpg', Astro.site).href,
+  offers: { '@type': 'Offer', price: t.precio, priceCurrency: 'EUR', url: new URL(`/torneos/${t.slug}/`, Astro.site).href, availability: estado === 'completo' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock' },
+  maximumAttendeeCapacity: t.capacidad,
+};
+---
+<Base titulo={`${t.nombre} (${ETIQUETA_FORMATO[t.formato]})`} descripcion={`${t.resumen} ${fechaLarga(t.inicio)} a las ${hora(t.inicio)} en ${tienda.nombre}, ${dir.ciudad}. Plazas, participantes, cuadro y resultados.`} pagina="torneos" jsonld={ld}>
+  <FichaTorneo t={t} jugadores={e.jugadores} ahora={ahora} />
+</Base>

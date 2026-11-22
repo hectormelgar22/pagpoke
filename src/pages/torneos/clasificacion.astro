@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import CabeceraTorneos from '../../components/CabeceraTorneos.astro';
+import '../../styles/torneos.css';
+import { estadoInicial } from '../../lib/almacen.ts';
+import { calcularRanking, temporadaDe, temporadas } from '../../lib/ranking.ts';
+import { podio, tablaRanking } from '../../lib/vistas/torneo.ts';
+import { tienda } from '../../data/tienda.ts';
+
+const ahora = new Date();
+const e = estadoInicial(ahora);
+const actual = temporadaDe(ahora.toISOString());
+const temps = temporadas(e.torneos);
+const rk = calcularRanking(e.torneos, e.jugadores, actual.id);
+const r = tienda.ranking;
+---
+<Base titulo="Clasificación de jugadores" descripcion={`Clasificación de la comunidad de ${tienda.nombre}: puntos, torneos jugados, victorias y últimos resultados de cada jugador.`} pagina="torneos">
+  <CabeceraTorneos actual="clasificacion" etiqueta="Clasificación de la comunidad" titulo="Quién brilla en la tienda." texto="Puntos calculados con los resultados de cada torneo finalizado. Elige temporada y toca un jugador para ver su historial." />
+  <section class="seccion osc" style="padding-top:clamp(2.5rem,5vw,3.5rem)">
+    <div class="contenedor">
+      <div class="fila" style="justify-content:space-between;margin-bottom:28px">
+        <div class="chips" role="group" aria-label="Temporada" data-temporadas>
+          {temps.map((t) => <button class="chip" type="button" data-temp={t.id} aria-pressed={t.id === actual.id ? 'true' : 'false'}>{t.nombre}</button>)}
+          <button class="chip" type="button" data-temp="todas" aria-pressed="false">Histórico</button>
+        </div>
+        <label class="buscador" style="flex:0 1 300px"><span class="solo-lector">Buscar jugador</span><input class="entrada" type="search" placeholder="Buscar jugador…" data-buscar-jugador style="padding-left:14px" /></label>
+      </div>
+      <div data-podio set:html={String(podio(rk, e.jugadores))} />
+      <div data-tabla set:html={String(tablaRanking(rk, e.jugadores))} />
+      <div class="tarjeta" style="margin-top:28px;padding:20px" >
+        <p class="etiqueta" style="margin-bottom:10px">Cómo se calculan los puntos</p>
+        <p style="color:var(--niebla)">{r.participacion} puntos por jugar cada torneo + {r.victoria} por cada partida ganada + bonus por puesto final ({r.bonusPuesto.map((b) => `${b.hasta === 1 ? 'campeón' : b.hasta === 2 ? 'finalista' : `top ${b.hasta}`}: +${b.puntos}`).join(', ')}). Empates en puntos: mayor porcentaje de victorias.</p>
+      </div>
+    </div>
+  </section>
+  <dialog id="dlg-jugador" class="osc hoja" aria-labelledby="jug-titulo">
+    <div class="dlg-cab"><div><p class="etiqueta" data-jug-pos></p><h2 id="jug-titulo" class="h3" style="margin-top:8px" data-jug-nick></h2></div><button class="btn-icono dlg-cerrar" type="button" data-cerrar aria-label="Cerrar" set:html={'<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>'} /></div>
+    <div class="dlg-cuerpo" data-jug-cuerpo></div>
+  </dialog>
+  <script>
+    import '../../scripts/clasificacion.ts';
+  </script>
+</Base>

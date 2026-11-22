@@ -1,2 +1,8 @@
+node_modules/
+dist/
+.astro/
 prospeccion/
 .claude/
+test-results/
+playwright-report/
+lighthouse/

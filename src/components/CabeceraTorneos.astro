@@ -1,0 +1,24 @@
+---
+import Foto from './Foto.astro';
+import { FOTOS } from '../data/fotos.ts';
+interface Props { actual: 'portada' | 'clasificacion' | 'historial' | 'agenda'; etiqueta: string; titulo: string; texto: string }
+const { actual, etiqueta, titulo, texto } = Astro.props;
+const enlaces = [
+  ['portada', 'Próximos torneos', '/torneos/'],
+  ['clasificacion', 'Clasificación', '/torneos/clasificacion/'],
+  ['historial', 'Historial', '/torneos/historial/'],
+  ['agenda', 'Agenda', '/agenda/'],
+];
+---
+<section class="arena osc">
+  <div class="arena-foto" aria-hidden="true"><Foto src={FOTOS.torneo.src} alt="" prioridad={actual === 'portada'} sizes="100vw" /></div>
+  <div class="contenedor">
+    <p class="etiqueta" style="margin-bottom:18px">{etiqueta}</p>
+    <h1 class="h1">{titulo}</h1>
+    <p class="entradilla" style="margin-top:18px">{texto}</p>
+    <slot />
+    <nav class="subnav" aria-label="Sección de torneos">
+      {enlaces.map(([id, n, url]) => <a href={url} aria-current={id === actual ? 'page' : undefined}>{n}</a>)}
+    </nav>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+---
+/* Mapa con "fachada": no se carga Google Maps (ni sus cookies) hasta que el visitante lo pide.
+   Así la página es más rápida y respeta la privacidad. */
+import { tienda, direccionCompleta, enlaceMapa } from '../data/tienda.ts';
+import { icono } from '../lib/iconos.ts';
+const { lat, lng } = tienda.direccion;
+const src = `https://maps.google.com/maps?q=${lat},${lng}&z=16&output=embed`;
+---
+<div class="mapa" data-mapa={src}>
+  <svg class="mapa-ilustracion" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <rect width="600" height="400" fill="#16142a" />
+    <g stroke="#262342" stroke-width="16" fill="none" stroke-linecap="round">
+      <path d="M-20 120 L640 60" /><path d="M-20 300 L640 250" /><path d="M150 -20 L210 420" /><path d="M420 -20 L380 420" />
+    </g>
+    <g stroke="#201d38" stroke-width="7" fill="none">
+      <path d="M-20 200 L640 160" /><path d="M60 -20 L100 420" /><path d="M300 -20 L320 420" /><path d="M520 -20 L500 420" /><path d="M-20 360 L640 330" />
+    </g>
+    <circle cx="300" cy="200" r="120" fill="url(#halo)" />
+    <defs><radialGradient id="halo"><stop offset="0" stop-color="#FFB547" stop-opacity=".28" /><stop offset="1" stop-color="#FFB547" stop-opacity="0" /></radialGradient></defs>
+  </svg>
+  <div class="mapa-capa">
+    <span class="pin" set:html={icono('tienda')} />
+    <strong>{direccionCompleta}</strong>
+    <div class="fila" style="justify-content:center">
+      <button class="btn btn--claro btn--peq" type="button" data-cargar-mapa>Ver mapa interactivo</button>
+      <a class="btn btn--fantasma btn--peq" href={enlaceMapa} target="_blank" rel="noopener">Abrir en Google Maps</a>
+    </div>
+    <p>El mapa interactivo lo sirve Google; solo se carga si lo pides.</p>
+  </div>
+</div>
+<script>
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-cargar-mapa]')) {
+    b.addEventListener('click', () => {
+      const m = b.closest<HTMLElement>('[data-mapa]')!;
+      const f = document.createElement('iframe');
+      f.src = m.dataset.mapa!;
+      f.title = 'Mapa de ubicación de la tienda';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      m.replaceChildren(f);
+    });
+  }
+</script>

@@ -1,0 +1,92 @@
+---
+import Base from '../../layouts/Base.astro';
+import CabeceraTorneos from '../../components/CabeceraTorneos.astro';
+import Foto from '../../components/Foto.astro';
+import '../../styles/torneos.css';
+import '../../styles/tienda.css';
+import { estadoInicial } from '../../lib/almacen.ts';
+import { tienda } from '../../data/tienda.ts';
+import { FOTOS } from '../../data/fotos.ts';
+import { icono } from '../../lib/iconos.ts';
+import { temporadaDe } from '../../lib/ranking.ts';
+import { pintarPortadaTorneos } from '../../lib/vistas/portada-torneos.ts';
+
+const ahora = new Date();
+const e = estadoInicial(ahora);
+const v = pintarPortadaTorneos(e, ahora);
+const temp = temporadaDe(ahora.toISOString());
+---
+<Base titulo={`Torneos Pokémon TCG en ${tienda.direccion.ciudad}: calendario e inscripción`} descripcion={`Torneos de Pokémon TCG en ${tienda.nombre} (${tienda.direccion.ciudad}): League Challenge, League Cup, Copa Destello y presentaciones. Inscríbete online, sigue los cuadros y la clasificación.`} pagina="torneos">
+  <CabeceraTorneos actual="portada" etiqueta={`Comunidad competitiva · ${temp.nombre}`} titulo="Aquí se juega en serio. Y se pasa bien." texto="Inscríbete desde la web, consulta quién juega, sigue el cuadro ronda a ronda y mira cómo va la clasificación de la tienda.">
+    <div class="marcador-comunidad" data-marcador set:html={v.marcador} />
+  </CabeceraTorneos>
+
+  <section class="seccion osc" style="padding-top:clamp(2.5rem,5vw,4rem)">
+    <div class="contenedor pila" style="--pila:clamp(3rem,6vw,5rem)">
+      <div data-destacado set:html={v.destacado} />
+      <div data-en-juego set:html={v.enJuego} />
+
+      <div id="proximos">
+        <div class="cab-seccion">
+          <div><p class="etiqueta">Calendario</p><h2 class="h2">Próximos torneos</h2></div>
+        </div>
+        <div class="pila" style="--pila:12px;margin-bottom:22px">
+          <div class="chips" role="group" aria-label="Filtrar por fecha" data-filtro="fecha">
+            <button class="chip" type="button" aria-pressed="true" data-v="todos">Todas las fechas</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="7">Próximos 7 días</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="30">Próximos 30 días</button>
+          </div>
+          <div class="chips" role="group" aria-label="Filtrar por formato" data-filtro="formato">
+            <button class="chip" type="button" aria-pressed="true" data-v="todos">Todos los formatos</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="eliminacion">Eliminación directa</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="suizo">Sistema suizo</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="suizo-top">Suizo + top</button>
+          </div>
+          <div class="chips" role="group" aria-label="Filtrar por estado" data-filtro="estado">
+            <button class="chip" type="button" aria-pressed="true" data-v="todos">Cualquier estado</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="abiertas">Con plazas</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="completo">Completos</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="proximamente">Próximamente</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="cerradas">Cerrados</button>
+          </div>
+        </div>
+        <p class="solo-lector" aria-live="polite" data-anuncio></p>
+        <div class="rejilla-torneos" data-proximos set:html={v.proximos} />
+      </div>
+
+      <div class="dos-col" style="align-items:start">
+        <div>
+          <div class="cab-seccion"><div><p class="etiqueta">Clasificación · {temp.nombre}</p><h2 class="h2">Top de la tienda</h2></div><a class="enlace-flecha" href="/torneos/clasificacion/">Clasificación completa <Fragment set:html={icono('flecha')} /></a></div>
+          <div data-ranking set:html={v.ranking} />
+        </div>
+        <div>
+          <div class="cab-seccion"><div><p class="etiqueta">Historial</p><h2 class="h2">Últimos campeones</h2></div><a class="enlace-flecha" href="/torneos/historial/">Todo el historial <Fragment set:html={icono('flecha')} /></a></div>
+          <div class="rejilla-historial" style="grid-template-columns:1fr" data-historial set:html={v.historial} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion clara" aria-labelledby="t-novato">
+    <div class="contenedor dos-col">
+      <div class="foto-marco foto-marco--alta"><Foto src={FOTOS.zonaJuego.src} alt={FOTOS.zonaJuego.alt} sizes="(min-width: 960px) 45vw, 100vw" /></div>
+      <div class="pila" style="--pila:18px">
+        <p class="etiqueta">Guía para tu primer torneo</p>
+        <h2 class="h2" id="t-novato">¿Primera vez? Así funciona.</h2>
+        <ol class="pasos" role="list">
+          <li><strong>Elige un torneo para empezar</strong><p>La Liga de los jueves y los torneos de presentación son perfectos para estrenarte: ambiente tranquilo y gente que te ayuda.</p></li>
+          <li><strong>Inscríbete aquí</strong><p>En un minuto. Te confirmamos la plaza y el día del torneo pagas en tienda.</p></li>
+          <li><strong>Trae tu mazo enfundado</strong><p>60 cartas en formato Estándar. Si no tienes, te prestamos uno o te ayudamos a montarlo.</p></li>
+          <li><strong>Juega todas las rondas</strong><p>En sistema suizo juegas todas las rondas aunque pierdas alguna. Tu resultado suma en la clasificación de la tienda.</p></li>
+        </ol>
+        <div class="fila">
+          <a class="btn btn--acento" href="/agenda/">Ver la agenda</a>
+          <a class="btn btn--fantasma" href="/catalogo/?uso=empezar">Productos para empezar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    import '../../scripts/torneos.ts';
+  </script>
+</Base>

@@ -1,0 +1,9 @@
+---
+/* Ficha para torneos creados desde el panel (no existen al generar la web: se pintan en el navegador). */
+import Base from '../../../layouts/Base.astro';
+import FichaTorneo from '../../../components/FichaTorneo.astro';
+import '../../../styles/torneos.css';
+---
+<Base titulo="Torneo" descripcion="Información, inscripción y resultados del torneo." pagina="torneos" noindex>
+  <FichaTorneo />
+</Base>

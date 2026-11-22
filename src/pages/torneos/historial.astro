@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import CabeceraTorneos from '../../components/CabeceraTorneos.astro';
+import '../../styles/torneos.css';
+import { estadoInicial } from '../../lib/almacen.ts';
+import { tarjetaHistorial } from '../../lib/vistas/torneo.ts';
+import { temporadas } from '../../lib/ranking.ts';
+import { tienda } from '../../data/tienda.ts';
+
+const e = estadoInicial();
+const pasados = e.torneos.filter((t) => t.finalizado).sort((a, b) => Date.parse(b.inicio) - Date.parse(a.inicio));
+const temps = temporadas(e.torneos);
+---
+<Base titulo="Historial de torneos y campeones" descripcion={`Todos los torneos de Pokémon TCG jugados en ${tienda.nombre}: campeones, finalistas, participantes y cuadros finales.`} pagina="torneos">
+  <CabeceraTorneos actual="historial" etiqueta={`Historial · ${pasados.length} torneos jugados`} titulo="Cada torneo deja un campeón." texto="Consulta los resultados de todos los torneos: cuadro final, clasificación y quién se llevó el trofeo." />
+  <section class="seccion osc" style="padding-top:clamp(2.5rem,5vw,3.5rem)">
+    <div class="contenedor">
+      <div class="pila" style="--pila:12px;margin-bottom:26px">
+        <div class="chips" role="group" aria-label="Temporada" data-filtro-h="temp">
+          <button class="chip" type="button" data-v="" aria-pressed="true">Todas</button>
+          {temps.map((t) => <button class="chip" type="button" data-v={t.id} aria-pressed="false">{t.nombre}</button>)}
+        </div>
+        <div class="chips" role="group" aria-label="Formato" data-filtro-h="formato">
+          <button class="chip" type="button" data-v="" aria-pressed="true">Todos los formatos</button>
+          <button class="chip" type="button" data-v="eliminacion" aria-pressed="false">Eliminación directa</button>
+          <button class="chip" type="button" data-v="suizo" aria-pressed="false">Sistema suizo</button>
+          <button class="chip" type="button" data-v="suizo-top" aria-pressed="false">Suizo + top</button>
+        </div>
+      </div>
+      <div class="rejilla-historial" data-historial set:html={pasados.map((t) => String(tarjetaHistorial(t, e.jugadores))).join('')} />
+      <p class="vacio" data-vacio hidden>No hay torneos con esos filtros.</p>
+    </div>
+  </section>
+  <script>
+    import { $, $$ } from '../../scripts/ui.ts';
+    import { cargar, suscribir } from '../../lib/almacen.ts';
+    import { tarjetaHistorial } from '../../lib/vistas/torneo.ts';
+    import { temporadaDe } from '../../lib/ranking.ts';
+    const f: Record<string, string> = { temp: '', formato: '' };
+    function pintar() {
+      const e = cargar();
+      const lista = e.torneos
+        .filter((t) => t.finalizado && (!f.temp || temporadaDe(t.inicio).id === f.temp) && (!f.formato || t.formato === f.formato))
+        .sort((a, b) => Date.parse(b.inicio) - Date.parse(a.inicio));
+      $('[data-historial]')!.innerHTML = lista.map((t) => String(tarjetaHistorial(t, e.jugadores))).join('');
+      $('[data-vacio]')!.hidden = lista.length > 0;
+    }
+    for (const g of $$('[data-filtro-h]')) {
+      g.addEventListener('click', (ev) => {
+        const b = (ev.target as HTMLElement).closest<HTMLElement>('[data-v]');
+        if (!b) return;
+        for (const x of $$('[data-v]', g)) x.setAttribute('aria-pressed', String(x === b));
+        f[g.dataset.filtroH!] = b.dataset.v!;
+        pintar();
+      });
+    }
+    pintar();
+    suscribir(pintar);
+  </script>
+</Base>

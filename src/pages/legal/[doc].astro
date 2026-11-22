@@ -1,0 +1,50 @@
+---
+/* Textos legales de PLANTILLA. Antes de publicar una web real, revisar con un asesor y completar los datos marcados. */
+import Base from '../../layouts/Base.astro';
+import { tienda, direccionCompleta } from '../../data/tienda.ts';
+
+export function getStaticPaths() {
+  return ['aviso-legal', 'privacidad', 'cookies'].map((doc) => ({ params: { doc } }));
+}
+const { doc } = Astro.params;
+const titular = `${tienda.nombreCompleto} [razón social y NIF del titular]`;
+const DOCS: Record<string, { titulo: string; parrafos: [string, string][] }> = {
+  'aviso-legal': {
+    titulo: 'Aviso legal',
+    parrafos: [
+      ['Titular de la web', `${titular}, con domicilio en ${direccionCompleta}. Contacto: ${tienda.contacto.email}.`],
+      ['Objeto', 'Esta web informa sobre los productos y actividades de la tienda física. No se realizan compras ni pagos online: las reservas y consultas se confirman con la tienda.'],
+      ['Precios y disponibilidad', 'Los precios y el stock se actualizan con frecuencia, pero pueden cambiar. La reserva solo es firme cuando la tienda la confirma.'],
+      ['Propiedad intelectual', 'Pokémon y los nombres de cartas y expansiones son marcas de sus respectivos titulares y se citan solo para identificar los productos a la venta. Las imágenes de esta web son propias o de uso permitido.'],
+    ],
+  },
+  privacidad: {
+    titulo: 'Política de privacidad',
+    parrafos: [
+      ['Responsable', `${titular}. Contacto para cualquier cuestión de privacidad: ${tienda.contacto.email}.`],
+      ['Qué datos tratamos', 'Los que nos das en los formularios (nombre, teléfono o email, mensaje, datos de inscripción en torneos) y las fotos que decidas enviarnos para valorar tu colección.'],
+      ['Para qué', 'Para responder a tu consulta, gestionar reservas, inscripciones a torneos y solicitudes de venta. En los torneos, tu nick y tu nombre con la inicial del apellido se publican en la lista de participantes y en los resultados.'],
+      ['Base legal y conservación', 'Tu consentimiento y la gestión de lo que nos pides. Conservamos los datos el tiempo necesario para ello y para cumplir obligaciones legales.'],
+      ['Tus derechos', 'Puedes pedir acceso, rectificación, supresión, oposición, limitación y portabilidad escribiendo a la dirección de contacto, y reclamar ante la Agencia Española de Protección de Datos (aepd.es).'],
+    ],
+  },
+  cookies: {
+    titulo: 'Política de cookies',
+    parrafos: [
+      ['Cookies propias', 'Esta web no usa cookies de seguimiento ni de publicidad. Guarda en tu navegador (almacenamiento local) tus favoritos y, en la versión de demostración, los datos de prueba del panel.'],
+      ['Servicios de terceros', 'El mapa de Google solo se carga si pulsas «Ver mapa interactivo». A partir de ese momento, Google puede usar sus propias cookies según su política.'],
+      ['Cómo borrarlas', 'Puedes borrar el almacenamiento local desde la configuración de tu navegador en cualquier momento.'],
+    ],
+  },
+};
+const d = DOCS[doc!];
+---
+<Base titulo={d.titulo} descripcion={`${d.titulo} de ${tienda.nombre}.`} migas={[{ nombre: d.titulo }]}>
+  <article class="contenedor" style="max-width:760px;padding-block:clamp(1.5rem,4vw,3rem) clamp(4rem,8vw,6rem)">
+    <h1 class="h1" style="font-size:clamp(2.2rem,5vw,3.4rem)">{d.titulo}</h1>
+    {tienda.demo.activa && <p class="nota-demo" style="margin-top:20px">Texto de plantilla para la demostración. Antes de publicar la web de una tienda real se completa con sus datos y se revisa con un asesor.</p>}
+    <div class="pila" style="--pila:26px;margin-top:32px">
+      {d.parrafos.map(([h, p]) => <section class="pila" style="--pila:8px"><h2 class="h3">{h}</h2><p style="color:var(--gris)">{p}</p></section>)}
+    </div>
+  </article>
+</Base>

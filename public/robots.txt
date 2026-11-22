@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /panel/
+
+Sitemap: https://destello-demo.netlify.app/sitemap-index.xml
