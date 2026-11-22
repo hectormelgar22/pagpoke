@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:github": "astro build && node scripts/base-github.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run tests",
